@@ -203,8 +203,6 @@ export const getAllGroups = async (req: Request, res: Response) => {
 export const getGroupById = async (req: Request, res: Response) => {
     const { groupId } = req.query;
 
-    console.log('GROUP USER GROUP USER: ', groupId);
-
     if (!groupId) {
         throw new ApiError(
             400,
