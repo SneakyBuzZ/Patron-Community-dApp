@@ -1,9 +1,4 @@
-import {
-  useAddUserToGroup,
-  useGenerateGroupPreSignedUrls,
-  useGetAllGroups,
-  useGetHasUserJoined,
-} from '@/lib/query/query';
+import { useAddUserToGroup, useGetAllGroups, useGetHasUserJoined } from '@/lib/query/query';
 import { useEffect, useState } from 'react';
 
 import useWalletStore from '@/lib/zustand/WalletStore';
@@ -18,7 +13,6 @@ const GroupDialog = () => {
   const [groups, setGroups] = useState<GroupType[] | null>(null);
   const [groupsWithJoinStatus, setGroupsWithJoinStatus] = useState<GroupType[] | null | any[]>([]);
   const { mutateAsync: getAllGroups, isPending: isGetting } = useGetAllGroups();
-  const { mutateAsync: generatePreSignedUrls } = useGenerateGroupPreSignedUrls();
   const { walletAddress } = useWalletStore();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -28,10 +22,7 @@ const GroupDialog = () => {
 
   useEffect(() => {
     getAllGroups().then((response) => {
-      generatePreSignedUrls(response).then((response) => {
-        setGroups(response);
-      });
-      // setGroups(response);
+      setGroups(response);
     });
   }, []);
 
@@ -108,14 +99,17 @@ const GroupDialog = () => {
                 <Group
                   id={each.id}
                   key={each.id}
-                  imgSrc={each.groupCoverImage}
-                  title={each.groupName}
-                  subtitle={each.groupDescription}
-                  description={each.groupDescription}
+                  groupCoverImage={each.groupCoverImage}
+                  groupName={each.groupName}
+                  groupDescription={each.groupDescription}
+                  groupSubtitle={each.groupDescription}
                   link={`/group/${each.id}`}
-                  members={each.members.length}
+                  noOfMembers={each.members.length}
                   hasJoined={each.hasJoined}
                   handleJoin={handleJoin}
+                  createdAt={each.createdAt}
+                  members={each.members}
+                  groupDisplayImage={each.groupDisplayImage}
                 />
               );
             })}

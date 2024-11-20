@@ -23,9 +23,10 @@ export const uploadImageToCloudinary = async (req: Request, res: Response) => {
 };
 
 export const createGroup = async (req: Request, res: Response) => {
-    const { groupName, groupDescription, ownerId, groupCoverImage } = req.body;
+    const { groupDescription, groupName, isPrivate, isCrypto, ownerId } =
+        req.body;
 
-    [groupDescription, groupName, ownerId].some((each) => {
+    [groupDescription, groupName, ownerId, isPrivate, isCrypto].some((each) => {
         if (!each) {
             throw new ApiError(
                 200,
@@ -33,6 +34,18 @@ export const createGroup = async (req: Request, res: Response) => {
             );
         }
     });
+
+    if (!req.files || req.files.length === 0) {
+        throw new ApiError(
+            400,
+            'CREATE GROUP : GROUP CONTROLLER : File is required'
+        );
+    }
+
+    const files = req.files as Express.Multer.File[];
+
+    const groupCoverImage = files[0].originalname;
+    const groupDisplayImage = files[1].originalname;
 
     const newGroup = await db.group.create({
         data: {
@@ -42,6 +55,9 @@ export const createGroup = async (req: Request, res: Response) => {
             ownerId,
             createdAt: new Date(),
             updatedAt: new Date(),
+            groupDisplayImage,
+            isPrivate: isPrivate === 'true' ? true : false,
+            isCrypto: isCrypto === 'true' ? true : false,
         },
     });
 
@@ -102,8 +118,6 @@ export const editGroupName = async (req: Request, res: Response) => {
 
 export const editGroupDescription = async (req: Request, res: Response) => {
     const { groupDescription, groupId } = req.query;
-
-    console.log('REQ QUERY: ', req.query);
 
     if (!groupDescription) {
         throw new ApiError(
@@ -174,6 +188,7 @@ export const getAllGroups = async (req: Request, res: Response) => {
         skip,
         take: 10,
         select: {
+            groupDisplayImage: true,
             groupCoverImage: true,
             groupName: true,
             groupDescription: true,
@@ -203,8 +218,6 @@ export const getAllGroups = async (req: Request, res: Response) => {
 export const getGroupById = async (req: Request, res: Response) => {
     const { groupId } = req.query;
 
-    console.log('GROUP USER GROUP USER: ', groupId);
-
     if (!groupId) {
         throw new ApiError(
             400,
@@ -217,6 +230,7 @@ export const getGroupById = async (req: Request, res: Response) => {
             id: String(groupId),
         },
         select: {
+            groupDisplayImage: true,
             groupCoverImage: true,
             groupName: true,
             groupDescription: true,

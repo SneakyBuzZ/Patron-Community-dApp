@@ -4,8 +4,15 @@ import { db } from '../utils/db';
 import { ApiResponse } from '../utils/ApiResponse';
 
 export const createPost = async (req: Request, res: Response) => {
-    const { postImage, postTitle, postDescription, ownerId, groupId } =
-        req.body;
+    const {
+        postImage,
+        postTitle,
+        postDescription,
+        ownerId,
+        groupId,
+        bountyValue,
+        bountyType,
+    } = req.body;
 
     [postImage, , postTitle, postDescription, ownerId, groupId].some((each) => {
         if (!each) {
@@ -16,27 +23,41 @@ export const createPost = async (req: Request, res: Response) => {
         }
     });
 
-    console.log('USERID: ', ownerId);
+    try {
+        const { id } = await db.post.create({
+            data: {
+                postTitle,
+                postDescription,
+                postImage,
+                ownerId,
+                groupId,
+            },
+        });
 
-    const newPost = await db.post.create({
-        data: {
-            postTitle,
-            postDescription,
-            postImage,
-            ownerId,
-            groupId,
-        },
-    });
+        console.log('OKAY OKAY ID: ', id);
 
-    if (!newPost) {
+        if (bountyType && bountyValue) {
+            const bounty = await db.bounty.create({
+                data: {
+                    bountyType,
+                    bountyValue,
+                    postId: id,
+                    bountyOwnerId: ownerId,
+                },
+            });
+
+            console.log('BOUNTY: ', bounty);
+        }
+
+        return res
+            .status(201)
+            .json(new ApiResponse(201, 'Successfully created post'));
+    } catch (error) {
+        console.log('ERROR: ', error);
         return res
             .status(500)
-            .json(new ApiResponse(500, {}, 'Failed to create post'));
+            .json(new ApiResponse(500, {}, "Couldn't create post"));
     }
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, newPost, 'Successfuly created post'));
 };
 
 export const deletePost = async (req: Request, res: Response) => {
@@ -116,6 +137,13 @@ export const getAllPostsInGroup = async (req: Request, res: Response) => {
                 select: {
                     name: true,
                     image: true,
+                },
+            },
+            bounty: {
+                select: {
+                    bountyStatus: true,
+                    bountyType: true,
+                    bountyValue: true,
                 },
             },
         },

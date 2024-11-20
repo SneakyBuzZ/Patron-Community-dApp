@@ -2,12 +2,39 @@ import axios from 'axios';
 import {
   ChangeUserImageType,
   ChangeUserNameType,
+  CreateBountyType,
   createPostType,
   GroupType,
   PostType,
 } from '@/lib/types';
 
 // * AWS S3
+
+export const uploadImageToS3 = async (file: File) => {
+  const formData = new FormData();
+  formData.append('image', file);
+  const responseUrl = await axios.post(
+    `http://localhost:3000/patron/api/s3/pre-signed-url`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return responseUrl.data.data.url;
+};
+
+export const generatePresignedUrl = async (name: string) => {
+  const responsePreUrl = await axios.get('http://localhost:3000/patron/api/s3/pre-signed-url', {
+    params: {
+      fileName: name,
+    },
+  });
+
+  return responsePreUrl.data.data.url;
+};
 
 export const displayImageOnPreview = async (file: File) => {
   const responseUrl = await axios.get('http://localhost:3000/patron/api/s3/pre-signed-url', {
@@ -38,14 +65,11 @@ export const displayImageOnPreview = async (file: File) => {
 };
 
 export const getUrlFromS3ByName = async (name: string) => {
-  const responsePreUrl = await axios.get(
-    'http://localhost:3000/patron/api/s3/pre-signed-url/posts',
-    {
-      params: {
-        fileName: name,
-      },
-    }
-  );
+  const responsePreUrl = await axios.get('http://localhost:3000/patron/api/s3/pre-signed-url', {
+    params: {
+      fileName: name,
+    },
+  });
 
   return responsePreUrl.data.data.url;
 };
@@ -81,19 +105,27 @@ export const generateGroupPreSignedUrl = async (group: GroupType): Promise<Group
   };
 };
 
-type UserToDbReturnType = {
-  name: string;
-  address: string;
-  createdAt: string | Date;
-  image: string;
+export type UserToDbReturnType = {
+  data: {
+    name: string;
+    address: string;
+    createdAt: string | Date;
+    image: string;
+  };
+  status: number;
 };
 
-export const addUserToDb = async (walletAddress: string): Promise<UserToDbReturnType | void> => {
+// * USER
+
+export const addUserToDb = async (walletAddress: string): Promise<UserToDbReturnType> => {
   const response = await axios.post(
     `http://localhost:3000/patron/api/user/add-user?address=${walletAddress}`
   );
 
-  return response.data.data;
+  return {
+    data: response.data.data,
+    status: response.status,
+  };
 };
 
 export const getUserByAddress = async (
@@ -103,7 +135,10 @@ export const getUserByAddress = async (
     `http://localhost:3000/patron/api/user/retrieve-user?address=${walletAddress}`
   );
 
-  return response.data.data;
+  return {
+    data: response.data.data,
+    status: response.status,
+  };
 };
 
 export const changeUserImage = async (userObject: ChangeUserImageType): Promise<string | void> => {
@@ -147,23 +182,27 @@ export type CreateGroupType = {
   groupName: string;
   groupDescription: string;
   groupCoverImage: string;
+  groupDisplayImage: string;
+  isPrivate: boolean;
+  isCrypto: boolean;
 };
 
-export const createGroup = async ({
-  walletAddress,
-  groupName,
-  groupDescription,
-  groupCoverImage,
-}: CreateGroupType) => {
-  const ownerId = await getUserIdByAddress(walletAddress);
+export const createGroup = async (formData: FormData) => {
+  const walletAddress = formData.get('walletAddress');
+  const ownerId = await getUserIdByAddress(String(walletAddress));
+
+  formData.append('ownerId', ownerId);
 
   if (ownerId) {
-    const response = await axios.post(`http://localhost:3000/patron/api/group/create-group`, {
-      groupName,
-      groupDescription,
-      ownerId,
-      groupCoverImage,
-    });
+    const response = await axios.post(
+      `http://localhost:3000/patron/api/group/create-group`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
 
     if (response) {
       return response;
@@ -175,8 +214,6 @@ export const createGroup = async ({
 
 export const getAllGroups = async () => {
   const response = await axios.get(`http://localhost:3000/patron/api/group/get-allGroup`);
-
-  console.log('RESPONSE: ', response.data.data);
 
   return response.data.data;
 };
@@ -214,8 +251,6 @@ export const getUserJoinedDate = async ({
 }) => {
   const userId = await getUserIdByAddress(walletAddress);
 
-  console.log('USER ID: ', userId);
-
   const response = await axios.get(
     `http://localhost:3000/patron/api/groupUser/get-joinedDate?userId=${userId}&groupId=${groupId}`
   );
@@ -235,7 +270,9 @@ export const getHasJoined = async ({
     `http://localhost:3000/patron/api/groupUser/get-isJoined?userId=${userId}&groupId=${groupId}`
   );
 
-  console.log('HAS JOINED: ', response.data.data);
+  if (response.status === 201) {
+    return 'owner';
+  }
 
   return response.data.data;
 };
@@ -248,8 +285,22 @@ export const createPost = async ({
   postDescription,
   walletAddress,
   groupId,
+  bountyType,
+  bountyValue,
 }: createPostType): Promise<null | number> => {
   const userId = await getUserIdByAddress(walletAddress);
+
+  if (bountyType === undefined || bountyValue === undefined) {
+    const response = await axios.post(`http://localhost:3000/patron/api/post/create`, {
+      postImage,
+      postTitle,
+      postDescription,
+      ownerId: userId,
+      groupId,
+    });
+
+    return response.data.statusCode;
+  }
 
   const response = await axios.post(`http://localhost:3000/patron/api/post/create`, {
     postImage,
@@ -257,6 +308,8 @@ export const createPost = async ({
     postDescription,
     ownerId: userId,
     groupId,
+    bountyType,
+    bountyValue,
   });
 
   return response.data.statusCode;
@@ -267,5 +320,12 @@ export const getPostsInGroup = async (groupId: string) => {
     `http://localhost:3000/patron/api/post/get-groupPosts?groupId=${groupId}`
   );
 
+  return response.data.data;
+};
+
+// BOUNTY API
+
+export const createBounty = async (bounty: CreateBountyType) => {
+  const response = await axios.post('http://localhost:3000/patron/api/bounty', bounty);
   return response.data.data;
 };

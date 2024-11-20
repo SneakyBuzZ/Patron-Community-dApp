@@ -10,10 +10,9 @@ import { getItemWithExpiry, setItemWithExpiry } from '@/lib/localStorage';
 import { useNavigate } from 'react-router-dom';
 import useWalletStore from '@/lib/zustand/WalletStore';
 import { hexlify } from 'ethers';
-import { useAddUserToDb } from '@/lib/query/query';
+import { useAddUserToDb, useGetUserByAddress } from '@/lib/query/query';
 import { useToast } from '@/hooks/use-toast';
-import { checkIfUserExists } from '@/lib/api';
-import GradientBackground from '../shared/GradientBackground';
+import GradientBackground from '@/components/shared/GradientBackground';
 
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -25,12 +24,25 @@ export default function HeroSection() {
   const [walletAddress, setWalletAddress] = useState<string>('');
   const navigate = useNavigate();
   const { setWalletAddress: setGlobalWalletAddress } = useWalletStore();
+  const { mutateAsync: getUserByAddress } = useGetUserByAddress();
+  const [isUserNew, setIsUserNew] = useState(true);
 
   useEffect(() => {
     const storedWalletAddress = getItemWithExpiry('walletAddress');
     if (storedWalletAddress) {
       setWalletAddress(storedWalletAddress);
       setGlobalWalletAddress(storedWalletAddress);
+      getUserByAddress(storedWalletAddress)
+        .then((response) => {
+          if (response?.status === 204) {
+            setIsUserNew(true);
+          } else if (response?.status === 200) {
+            setIsUserNew(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [walletAddress]);
 
@@ -39,12 +51,10 @@ export default function HeroSection() {
   const { mutateAsync: addUserToDb } = useAddUserToDb();
 
   const signInWithEth = async () => {
-    if (walletAddress) {
+    if (walletAddress && !isUserNew) {
       navigate('/all-groups');
       return;
     } else {
-      // GETTING WALLET ADDRESS
-
       if (window.ethereum) {
         await window.ethereum
           .request({ method: 'eth_requestAccounts' })
@@ -71,8 +81,6 @@ export default function HeroSection() {
         const checkResponse = await axios.get(`${serverUrl}/nounce/check-walletAddress-exists`, {
           params: { walletAddress: value },
         });
-
-        console.log('CHECK RESPONSE: ', checkResponse.data.data.message);
 
         let nounce: String;
 
@@ -111,22 +119,16 @@ export default function HeroSection() {
           setGlobalWalletAddress(value);
           setWalletAddress(value);
 
-          const userExists = await checkIfUserExists(value);
+          const userExists = await getUserByAddress(value);
 
-          if (!userExists) {
-            const newUser = await addUserToDb(value);
+          if (userExists && userExists.data === undefined) {
+            const { data: newUser } = await addUserToDb(value);
 
             if (newUser) {
               toast({
                 title: `Account successfully created`,
                 description: `Account with name ${newUser.name} created successfully`,
                 variant: 'default',
-              });
-            } else {
-              toast({
-                title: `Account already exists`,
-                description: `Account already exists`,
-                variant: 'destructive',
               });
             }
           } else {
@@ -143,14 +145,13 @@ export default function HeroSection() {
         }
       } catch (error) {
         alert('Server maynot be responding');
-        console.error('Error fetching nonce:', error);
       }
     }
   };
 
   return (
     <div className="dark:bg-PATRON_BLACK z-10">
-      <NavBar showAddress />
+      <NavBar showAddress className="py-2" />
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <GradientBackground className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#2afff8b5] to-[#c919ff70] opacity-40 dark:opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] custom-fade-in" />
         <div className="flex flex-col w-full my-5">
@@ -167,7 +168,7 @@ export default function HeroSection() {
             onClick={signInWithEth}
             className="cursor-pointer h-7 md:h-9 mt-4 md:mt-8 mx-auto text-black dark:text-neutral-800 bg-neutral-300"
           >
-            {walletAddress ? 'Make community' : 'Connect wallet'}
+            {walletAddress && !isUserNew ? 'Make community' : 'Connect wallet'}
 
             <MoveRight className="h-4 ml-2" />
           </Button>

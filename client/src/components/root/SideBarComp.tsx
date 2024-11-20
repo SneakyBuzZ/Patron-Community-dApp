@@ -7,7 +7,7 @@ const SidebarComp = () => {
 
   return (
     <>
-      <ul className="min-h-svh flex flex-col justify-start items-start w-1/5 gap-7 py-5 px-4">
+      <ul className="h-full flex flex-col justify-start items-start w-1/5 gap-7 py-5 px-4 overflow-y-auto scrollbar-hide">
         {SideBarList.map((each) => {
           return (
             <li key={each.title} className="w-full flex flex-col">

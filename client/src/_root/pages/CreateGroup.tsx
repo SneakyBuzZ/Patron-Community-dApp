@@ -29,11 +29,12 @@ import { ImageDown, Settings, UserPen } from 'lucide-react';
 import FlexRow from '@/components/ui/flex-row';
 import FlexCol from '@/components/ui/flex-col';
 import { Switch } from '@/components/ui/switch';
+import { uploadImageToS3 } from '@/lib/api';
 
 const CreateGroup = () => {
   const { toast } = useToast();
   const [cover, setCover] = useState<File | null>(null);
-  const [_, setProfile] = useState<File | null>(null);
+  const [profile, setProfile] = useState<File | null>(null);
   const { contractMethod, status } = useTransferFunds();
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const [profilePreviewUrl, setprofilePreviewUrl] = useState<string | null>(null);
@@ -76,21 +77,35 @@ const CreateGroup = () => {
   const { walletAddress } = useWalletStore();
 
   async function onSubmit(values: z.infer<typeof createGroupSchema>) {
-    const transactionStatus = await contractMethod('0.01');
+    const transactionStatus = await contractMethod('0.001');
+
+    if (transactionStatus === TransactionStatus.Sending) {
+      toast({ title: 'Transaction is processing...' });
+      return;
+    }
 
     if (transactionStatus === TransactionStatus.Failed) {
       toast({ title: 'Transaction failed' });
       return;
     }
 
-    const coverImage = cover?.name;
+    const formData = new FormData();
 
-    const response = await createGroup({
-      groupName: values.groupName,
-      groupDescription: values.groupDescription,
-      groupCoverImage: coverImage || '',
-      walletAddress: walletAddress?.toString() || '',
-    });
+    if (cover && profile) {
+      await uploadImageToS3(cover);
+      await uploadImageToS3(profile);
+
+      formData.append('images', cover);
+      formData.append('images', profile);
+    }
+
+    formData.append('groupName', values.groupName);
+    formData.append('groupDescription', values.groupDescription);
+    formData.append('walletAddress', walletAddress?.toString() || '');
+    formData.append('isPrivate', String(allowAnyone));
+    formData.append('isCrypto', String(isCryptoGroup));
+
+    const response = await createGroup(formData);
 
     if (response?.status === 200) {
       navigate('/all-groups');
@@ -193,8 +208,8 @@ const CreateGroup = () => {
                   )}
                 </Button>
                 <h5 className="text-md">
-                  Pay <span className="font-semibold text-PATRON_TEXT_WHITE_PRIMARY">0.01</span>{' '}
-                  dollars to create a community
+                  Pay <span className="font-semibold text-PATRON_TEXT_WHITE_PRIMARY">0.001</span>{' '}
+                  Eth to create a community
                 </h5>
               </form>
             </Form>
@@ -232,7 +247,10 @@ const CreateGroup = () => {
             </FlexCol>
             <FlexCol className="items-start gap-2 px-5 transform -translate-y-6">
               <h1 className="text-xl">{communityName || 'Community Name'}</h1>
-              <p className="text-sm">{communityDescription || 'Community Description'}</p>
+              <p className="text-sm">
+                {communityDescription.slice(0, communityDescription.length / 4) + '...' ||
+                  'Community Description'}
+              </p>
             </FlexCol>
           </FlexCol>
 

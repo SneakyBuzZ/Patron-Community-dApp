@@ -2,10 +2,14 @@ import {
   ArrowLeftFromLine,
   Award,
   BadgeInfo,
+  Calendar,
   FileLock2,
   Handshake,
   HomeIcon,
+  List,
   Search,
+  Star,
+  ThumbsUp,
   TrendingUp,
   Users,
 } from 'lucide-react';
@@ -70,31 +74,37 @@ export const AvatarList = [
 
 export const featureGrid = [
   {
+    id: 1,
     title: 'Decentralized Identity Management',
     description:
       'Foster dynamic and secure interactions within a decentralized, blockchain-powered community.',
   },
   {
+    id: 2,
     title: 'End-to-End Encryption',
     description:
       'Ensure user privacy with encrypted communication and data-sharing protocols throughout the platform.',
   },
   {
+    id: 3,
     title: 'Immutable Record Keeping',
     description:
       'Store all interactions and transactions on a tamper-proof blockchain ledger for complete transparency.',
   },
   {
+    id: 4,
     title: 'Smart Contract Integration',
     description:
       'Automate and streamline community governance and transactions with self-executing smart contracts.',
   },
   {
+    id: 5,
     title: 'Tokenized Reputation System',
     description:
       'Reward positive contributions with tokens, allowing users to build trust and influence within the community.',
   },
   {
+    id: 6,
     title: 'Privacy-Focused Data Sharing',
     description:
       'Provide users with full control over their data, enabling secure and permission-based sharing.',
@@ -138,6 +148,32 @@ export const SideBarList = [
     ],
   },
   {
+    title: 'Games',
+    children: [
+      {
+        title: 'New Releases',
+        path: '/games',
+        icon: Star,
+      },
+      {
+        title: 'Top Rated',
+        path: '/top-rated',
+        icon: ThumbsUp,
+      },
+      {
+        title: 'Genres',
+        path: '/genres',
+        icon: List,
+      },
+      {
+        title: 'Upcoming',
+        path: '/upcoming',
+        icon: Calendar,
+      },
+    ],
+  },
+
+  {
     title: 'Resources',
     children: [
       {
@@ -162,4 +198,116 @@ export const SideBarList = [
       },
     ],
   },
+];
+
+export const GameList = [
+  {
+    gameCover: 'https://images7.alphacoders.com/137/1377511.jpg',
+    gameName: 'Eclipse of Eternity',
+    gameDescription:
+      'A sci-fi adventure game where players explore distant galaxies, uncover ancient secrets, and battle alien civilizations to save the universe.',
+    createdAt: new Date('2023-11-15'),
+    id: '1',
+    gameDisplayImage: 'https://avatarfiles.alphacoders.com/363/thumb-1920-363019.jpg',
+    rating: '0',
+    likes: '1',
+  },
+  {
+    gameName: "Flip' N Win",
+    gameCover:
+      'https://www.gammastack.com/wp-content/uploads/2021/08/Types-Of-Lottery-Blog-Post.jpg.webp',
+    gameDisplayImage: '/head-coin.svg',
+    gameDescription:
+      'A fun and addictive puzzle game where players flip and match colorful tiles to win prizes and rewards.',
+    createdAt: new Date('2024-08-30'),
+    id: '4',
+    rating: '0',
+    likes: '0',
+  },
+  {
+    gameCover: 'https://images5.alphacoders.com/292/292839.jpg',
+    gameDisplayImage: 'https://images8.alphacoders.com/131/1313275.png',
+    gameName: 'Mystic Realms: The Awakening',
+    gameDescription:
+      'An epic fantasy RPG where players embark on a quest to awaken the ancient dragons and restore balance to the mystical realms.',
+    createdAt: new Date('2024-02-20'),
+    id: '2',
+    rating: '0',
+    likes: '1',
+  },
+  {
+    gameCover: 'https://images8.alphacoders.com/135/1352905.png',
+    gameDisplayImage: 'https://avatarfiles.alphacoders.com/373/373555.png',
+    gameName: 'Cyber Knights: Rebellion',
+    gameDescription:
+      'A cyberpunk action game where players lead a group of rebels against a corrupt megacorporation in a dystopian future city.',
+    createdAt: new Date('2024-05-10'),
+    id: '3',
+    rating: '0',
+    likes: '0',
+  },
+
+  // {
+  //   gameCover: 'https://example.com/cover4.jpg',
+  //   gameDisplayImage: 'https://example.com/display4.jpg',
+  //   gameName: 'Shadow of the Ancients',
+  //   gameDescription:
+  //     'A dark fantasy game where players must uncover the secrets of an ancient civilization and prevent the return of a malevolent force.',
+  //   createdAt: new Date('2024-08-30'),
+  //   id: '4',
+  // },
+  // {
+  //   gameCover: 'https://example.com/cover5.jpg',
+  //   gameDisplayImage: 'https://example.com/display5.jpg',
+  //   gameName: 'Galactic Frontier: Odyssey',
+  //   gameDescription:
+  //     'A space exploration game where players captain a starship, build alliances, and explore uncharted territories in a vast galaxy.',
+  //   createdAt: new Date('2024-12-05'),
+  //   id: '5',
+  // },
+  // {
+  //   gameCover: 'https://example.com/cover6.jpg',
+  //   gameDisplayImage: 'https://example.com/display6.jpg',
+  //   gameName: 'Legends of Avalon',
+  //   gameDescription:
+  //     'A medieval fantasy game where players become knights of the Round Table, embark on quests, and defend the kingdom of Avalon.',
+  //   createdAt: new Date('2025-03-15'),
+  //   id: '6',
+  // },
+  // {
+  //   gameCover: 'https://example.com/cover7.jpg',
+  //   gameDisplayImage: 'https://example.com/display7.jpg',
+  //   gameName: 'Neon City Chronicles',
+  //   gameDescription:
+  //     'An open-world action game set in a neon-lit metropolis, where players navigate the criminal underworld and fight for control of the city.',
+  //   createdAt: new Date('2025-06-25'),
+  //   id: '7',
+  // },
+  // {
+  //   gameCover: 'https://example.com/cover8.jpg',
+  //   gameDisplayImage: 'https://example.com/display8.jpg',
+  //   gameName: 'Realm of the Lost Gods',
+  //   gameDescription:
+  //     'An action-adventure game where players explore ancient ruins, solve puzzles, and battle mythical creatures to uncover the secrets of the lost gods.',
+  //   createdAt: new Date('2025-09-10'),
+  //   id: '8',
+  // },
+  // {
+  //   gameCover: 'https://example.com/cover9.jpg',
+  //   gameDisplayImage: 'https://example.com/display9.jpg',
+  //   gameName: 'Quantum Rift',
+  //   gameDescription:
+  //     'A sci-fi thriller where players manipulate time and space to solve mysteries and prevent a catastrophic event that threatens reality itself.',
+  //   createdAt: new Date('2025-12-20'),
+  //   id: '9',
+  // },
+  // {
+  //   gameCover: 'https://example.com/cover10.jpg',
+  //   gameDisplayImage: 'https://example.com/display10.jpg',
+  //   gameName: 'Vanguard: Rise of the Heroes',
+  //   gameDescription:
+  //     'A superhero action game where players assemble a team of heroes, thwart villainous plots, and save the world from impending doom.',
+  //   createdAt: new Date('2026-03-05'),
+  //   id: '10',
+  // },
 ];

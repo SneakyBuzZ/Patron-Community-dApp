@@ -48,6 +48,7 @@ const ProfileBadge = () => {
   const [profileEdit, setProfileEdit] = useState(false);
   const [nameEdit, setNameEdit] = useState(false);
   const [user, setUser] = useState<null | UserDbType>(null);
+  const [isUserNew, setIsUserNew] = useState(true);
   const [currentProfile, setCurrentProfile] = useState<null | string>(null);
   const [name, setName] = useState<string>('');
   const [didNameChangeHappended, setDidNameChangeHappended] = useState(false);
@@ -59,13 +60,29 @@ const ProfileBadge = () => {
 
   useEffect(() => {
     getUserByAddress(String(walletAddress)).then((response) => {
-      if (response?.name || response?.image) {
-        setUser(response);
-        setCurrentProfile(response.image);
-        setName(response.name);
-        setDidImageChangeHappended(false);
-        setDidNameChangeHappended(false);
+      if (response?.status === 204) {
+        setIsUserNew(true);
+        toast({
+          title: 'Are you new here ?',
+          description: 'Connect wallet & explore our platform',
+        });
+        return;
+      } else if (response?.status === 200) {
+        setIsUserNew(false);
+        if (response?.data) {
+          setUser(response.data);
+          setCurrentProfile(response.data.image || '');
+          setName(response.data.name || '');
+          setDidImageChangeHappended(false);
+        }
       }
+      // if (response.data?.name || response.data?.image) {
+      //   setUser(response.data);
+      //   setCurrentProfile(response.data.image || '');
+      //   setName(response.data.name || '');
+      //   setDidImageChangeHappended(false);
+      //   setDidNameChangeHappended(false);
+      // }
     });
   }, [setName, setCurrentProfile, didNameChangeHappended, didImageChangeHappended]);
 
@@ -156,11 +173,13 @@ const ProfileBadge = () => {
       {/** DROP DOWN */}
       <DropdownMenu>
         <DropdownMenuTrigger className="border-none outline-none">
-          <img
-            src={currentProfile || user?.image || 'https://github.com/shadcn.png'}
-            alt="profile"
-            className="rounded-full size-8 md:size-9"
-          />
+          {!isUserNew && (
+            <img
+              src={currentProfile || user?.image || 'https://github.com/shadcn.png'}
+              alt="profile"
+              className="rounded-full size-8 md:size-9"
+            />
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="dark:bg-neutral-900 dark:border-stone-800 dark:text-neutral-400 font-fira-code mr-10">
           <DropdownMenuLabel className="dark:text-stone-300">My Account</DropdownMenuLabel>

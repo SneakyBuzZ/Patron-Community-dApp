@@ -86,8 +86,6 @@ export const checkIfWalletAddressExists = async (
             },
         });
 
-        console.log('RESPONSE: ', response);
-
         if (response?.walletAddress === String(walletAddress)) {
             return res.status(200).json(
                 new ApiResponse(

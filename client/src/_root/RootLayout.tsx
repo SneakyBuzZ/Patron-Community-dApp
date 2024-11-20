@@ -9,11 +9,16 @@ const RootLayout = () => {
     <>
       {localStorageAddress ? (
         <>
-          <div className="w-full min-h-screen">
+          <div className="w-full h-screen overflow-auto scrollbar-hide">
             <NavBar showAddress />
-            <div className="w-full h-full flex justify-start items-start">
+            <div className="w-full h-[92%] flex justify-start items-start">
               <SidebarComp />
-              <Outlet />
+              <div
+                className="w-full h-full overflow-y-auto overflow-x-hidden scrollbar-hide
+               flex justify-center items-start border-l border-r-PATRON_BORDER_COLOR"
+              >
+                <Outlet />
+              </div>
             </div>
           </div>
         </>

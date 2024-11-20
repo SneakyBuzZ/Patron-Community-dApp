@@ -14,6 +14,7 @@ import { Toaster } from '@/components/ui/toaster';
 import GroupPage from '@/_root/pages/GroupPage';
 import CreatePost from '@/_root/pages/CreatePost';
 import { ThemeProvider } from '@/components/shared/ThemeProvider';
+import AllGames from './_root/pages/AllGames';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/create-group" element={<CreateGroup />} />
                 <Route path={`/group/:slug`} element={<GroupPage />} />
                 <Route path={`/:slug/create-post`} element={<CreatePost />} />
+                <Route path={`/games`} element={<AllGames />} />
 
                 <Route path="/test/home" element={<HomePage />} />
                 <Route path="/profile" element={<Profile />} />

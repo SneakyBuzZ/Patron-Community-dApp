@@ -27,8 +27,6 @@ export const addUserToGroup = async (req: Request, res: Response) => {
 
     const { message } = await getUserInGroup(String(user?.id), String(groupId));
 
-    console.log('MESSAGE: ', message);
-
     if (message == true) {
         return res
             .status(200)
@@ -196,6 +194,23 @@ export const getIfUserHasJoined = async (req: Request, res: Response) => {
             400,
             'GET HAS USER JOINED : GROUP USER CONTROLLER : User Id is required'
         );
+    }
+
+    const owner = await db.group.findUnique({
+        where: {
+            id: String(groupId),
+        },
+        select: {
+            ownerId: true,
+        },
+    });
+
+    if (owner?.ownerId === userId) {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, 'owner', 'User is the owner of the group')
+            );
     }
 
     const user = await db.groupUser.findFirst({
