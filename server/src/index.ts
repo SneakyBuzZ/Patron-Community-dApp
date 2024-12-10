@@ -17,7 +17,7 @@ dotenv.config({
 //############## APP ##################
 
 const app: Express = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 //################ UTILITIES #############
 

@@ -23,13 +23,13 @@ function App() {
           <section className="w-full min-h-screen flex flex-col justify-start items-center font-fira-code">
             <Routes>
               <Route element={<PublicLayout />}>
-                <Route path="/" element={<LandingPage />} />
+                <Route path="/" element={<AllGroups />} />
               </Route>
               <Route element={<AuthLayout />}>
                 <Route index path="/auth" element={<Web3Auth />} />
               </Route>
               <Route element={<RootLayout />}>
-                <Route path="/all-groups" element={<AllGroups />} />
+                <Route path="/ok" element={<AllGroups />} />
                 <Route path="/create-group" element={<CreateGroup />} />
                 <Route path={`/group/:slug`} element={<GroupPage />} />
                 <Route path={`/:slug/create-post`} element={<CreatePost />} />

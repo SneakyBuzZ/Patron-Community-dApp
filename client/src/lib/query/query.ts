@@ -13,6 +13,7 @@ import {
   generatePostPreSignedUrls,
   getAllGroups,
   getGroupById,
+  getHasJoined,
   getPostsInGroup,
   getUserByAddress,
   getUserJoinedDate,
@@ -114,6 +115,13 @@ export const useGetUserJoinedDate = () => {
   return useMutation({
     mutationFn: ({ walletAddress, groupId }: { walletAddress: string; groupId: string }) =>
       getUserJoinedDate({ walletAddress, groupId }),
+  });
+};
+
+export const useGetHasUserJoined = () => {
+  return useMutation({
+    mutationFn: ({ walletAddress, groupId }: { walletAddress: string; groupId: string }) =>
+      getHasJoined({ walletAddress, groupId }),
   });
 };
 

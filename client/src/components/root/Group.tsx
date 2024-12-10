@@ -1,4 +1,3 @@
-// DialogBasicOne.tsx
 import {
   Dialog,
   DialogTrigger,
@@ -24,6 +23,7 @@ interface GroupPropType {
   description: string;
   link: string;
   members: number;
+  hasJoined: boolean;
   handleJoin: (groupId: string) => Promise<void>;
 }
 
@@ -35,6 +35,7 @@ export function Group({
   description,
   link,
   members,
+  hasJoined,
   handleJoin,
 }: GroupPropType) {
   return (
@@ -49,20 +50,20 @@ export function Group({
         style={{
           borderRadius: '12px',
         }}
-        className="flex flex-col overflow-hidden border border-zinc-950/10 bg-white dark:border-zinc-50/10 dark:bg-PATRON_DARK_GRAY"
+        className="flex flex-col overflow-hidden border border-zinc-950/10 bg-neutral-50/50 dark:border-zinc-50/10 dark:bg-PATRON_DARK_GRAY"
       >
-        <DialogImage src={imgSrc} alt={title} className="h-48 w-full object-cover" />
-        <div className="flex flex-col flex-grow items-start justify-between p-2 py-3 gap-4">
+        <DialogImage src={imgSrc} alt={title} className="h-32 w-full object-cover" />
+        <div className="flex flex-col flex-grow items-start justify-between p-2 py-3">
           <div className="flex flex-col justify-center items-start">
             <DialogTitle className="text-PATRON_BLACK dark:text-zinc-50">{title}</DialogTitle>
             <DialogSubtitle className="text-PATRON_TEXT_WHITE_SECONDARY dark:text-zinc-400 text-xs text-start">
-              {subtitle}
+              {subtitle.slice(0, subtitle.length / 4) + '....'}
             </DialogSubtitle>
           </div>
           <div className="flex justify-between items-center w-full">
             <div className="flex justify-start items-center gap-2">
               <Button variant={'outline'} className="flex items-center p-2 h-6 text-[10px]">
-                Join
+                {hasJoined ? 'Joined' : 'Join'}
               </Button>
               <Link to={link}>
                 <ExternalLink size={16} />
@@ -111,17 +112,21 @@ export function Group({
                   onClick={() => handleJoin(id)}
                   className="h-full bg-PATRON_BORDER_COLOR hover:bg-PATRON_DARK_GRAY outline-none"
                 >
-                  Join channel
+                  {hasJoined ? 'Explore' : 'Join this channel'}
                 </Button>
-                <Link
-                  to={`/group/${id}`}
-                  className="h-full border rounded-md flex justify-center items-center text-sm px-3"
-                >
-                  Visit
-                </Link>
+                {!hasJoined && (
+                  <Link
+                    to={`/group/${id}`}
+                    className="h-full border rounded-md flex justify-center items-center text-sm px-3"
+                  >
+                    Visit
+                  </Link>
+                )}
               </div>
               <span className="text-xs w-2/3">
-                Join this channel to have fun and post your thoughts
+                {hasJoined
+                  ? 'You have already joined this community, Click explore'
+                  : 'Join this channel to have fun and post your thoughts'}
               </span>
             </div>
           </div>

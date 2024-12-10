@@ -214,9 +214,28 @@ export const getUserJoinedDate = async ({
 }) => {
   const userId = await getUserIdByAddress(walletAddress);
 
+  console.log('USER ID: ', userId);
+
   const response = await axios.get(
     `http://localhost:3000/patron/api/groupUser/get-joinedDate?userId=${userId}&groupId=${groupId}`
   );
+
+  return response.data.data;
+};
+
+export const getHasJoined = async ({
+  walletAddress,
+  groupId,
+}: {
+  walletAddress: string;
+  groupId: string;
+}) => {
+  const userId = await getUserIdByAddress(walletAddress);
+  const response = await axios.get(
+    `http://localhost:3000/patron/api/groupUser/get-isJoined?userId=${userId}&groupId=${groupId}`
+  );
+
+  console.log('HAS JOINED: ', response.data.data);
 
   return response.data.data;
 };

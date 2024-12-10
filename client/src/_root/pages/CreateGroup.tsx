@@ -25,7 +25,6 @@ import { useToast } from '@/hooks/use-toast';
 import GradientBackground from '@/components/shared/GradientBackground';
 import { useTransferFunds } from '@/hooks/use-transfer-funds';
 import { TransactionStatus } from '@/lib/enum';
-import PreviewDrawer from '@/components/root/PreviewDrawer';
 import { ImageDown, Settings, UserPen } from 'lucide-react';
 import FlexRow from '@/components/ui/flex-row';
 import FlexCol from '@/components/ui/flex-col';
@@ -181,23 +180,22 @@ const CreateGroup = () => {
                     </FormItem>
                   )}
                 />
-                <div className="flex justify-start items-center gap-4 h-10">
-                  <Button variant={'patron'} type="submit" className="text-purple-500">
-                    {status === TransactionStatus.Sending ? (
-                      <div className="flex gap-2">
-                        <MoonLoader size={14} color="#fff" />
-                        <span> Transaction Taking Place</span>
-                      </div>
-                    ) : isCreating ? (
+                <Button variant={'patron'} type="submit" className="text-purple-500">
+                  {status === TransactionStatus.Sending ? (
+                    <div className="flex gap-2">
                       <MoonLoader size={14} color="#fff" />
-                    ) : (
-                      'Create Your Community'
-                    )}
-                  </Button>
-                  <PreviewDrawer className="text-PATRON_TEXT_WHITE_SECONDARY border h-full rounded-md p-2 px-3">
-                    Get Preview
-                  </PreviewDrawer>
-                </div>
+                      <span> Transaction Taking Place</span>
+                    </div>
+                  ) : isCreating ? (
+                    <MoonLoader size={14} color="#fff" />
+                  ) : (
+                    'Create Your Community'
+                  )}
+                </Button>
+                <h5 className="text-md">
+                  Pay <span className="font-semibold text-PATRON_TEXT_WHITE_PRIMARY">0.01</span>{' '}
+                  dollars to create a community
+                </h5>
               </form>
             </Form>
           </div>

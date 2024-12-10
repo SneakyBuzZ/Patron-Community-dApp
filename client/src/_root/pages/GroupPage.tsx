@@ -44,6 +44,7 @@ const GroupPage = () => {
           walletAddress: walletAddress.toString(),
           groupId: slug,
         }).then((response) => {
+          console.log('RESPONSE JOINED DATA: ', response);
           setjoinedDate(convertDateToDDMMYYYY(response));
         });
       }

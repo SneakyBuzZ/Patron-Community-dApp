@@ -187,3 +187,37 @@ export const getUserJoinedDate = async (req: Request, res: Response) => {
             );
     }
 };
+
+export const getIfUserHasJoined = async (req: Request, res: Response) => {
+    const { userId, groupId } = req.query;
+
+    if (!userId) {
+        throw new ApiError(
+            400,
+            'GET HAS USER JOINED : GROUP USER CONTROLLER : User Id is required'
+        );
+    }
+
+    const user = await db.groupUser.findFirst({
+        where: {
+            userId: String(userId),
+            groupId: String(groupId),
+        },
+    });
+
+    if (!user) {
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    false,
+                    'User does not exist in the provided group or does not exist at all'
+                )
+            );
+    } else {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, true, 'User has joined the group'));
+    }
+};

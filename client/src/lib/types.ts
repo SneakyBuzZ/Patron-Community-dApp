@@ -18,6 +18,7 @@ export type GroupType = {
   createdAt: string | Date;
   members: any[];
   id: string;
+  hasJoined?: boolean;
 };
 
 export type createPostType = {
