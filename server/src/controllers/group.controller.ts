@@ -181,7 +181,7 @@ export const deletedGroup = async (req: Request, res: Response) => {
         .json(new ApiResponse(200, {}, 'Successfully deleted the group'));
 };
 
-export const getAllGroups = async (req: Request, res: Response) => {
+export const getAllGroups = async (_req: Request, res: Response) => {
     const skip = (Number(1) - 1) * Number(10);
 
     const allGroups = await db.group.findMany({
