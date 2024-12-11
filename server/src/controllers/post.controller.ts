@@ -214,6 +214,29 @@ export const getAllPostsOfUser = async (req: Request, res: Response) => {
         );
 };
 
+export const getAllPosts = async (req: Request, res: Response) => {
+    const { limit = 10, pageNo = 1 } = req.query;
+
+    const skip = (Number(pageNo) - 1) * Number(limit);
+
+    const allPosts = await db.post.findMany({
+        skip,
+        take: Number(limit),
+    });
+
+    if (!allPosts) {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, {}, 'Failed to retriev all posts'));
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, allPosts, 'Successfully retrieved all posts')
+        );
+};
+
 export const getAllUnSolvedPostsInGroup = async (
     req: Request,
     res: Response
