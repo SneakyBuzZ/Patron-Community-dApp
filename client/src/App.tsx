@@ -35,8 +35,7 @@ function App() {
                 <Route path={`/group/:slug`} element={<GroupPage />} />
                 <Route path={`/:slug/create-post`} element={<CreatePost />} />
                 <Route path={`/games`} element={<AllGames />} />
-
-                <Route path="/test/home" element={<HomePage />} />
+                <Route path="/home" element={<HomePage />} />
                 <Route path="/profile" element={<Profile />} />
               </Route>
               <Route path="*" element={<NotFoundPage />} />

@@ -117,7 +117,7 @@ export const SideBarList = [
     children: [
       {
         title: 'Home',
-        path: '/',
+        path: '/home',
         icon: HomeIcon,
       },
       {
