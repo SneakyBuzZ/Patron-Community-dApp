@@ -135,5 +135,6 @@ model Bounty {
   postId String @unique
   post   Post   @relation(fields: [postId], references: [id])
 
+  @@index([bountyStatus, bountyType, bountyOwnerId])
   @@map("bounties")
 }
