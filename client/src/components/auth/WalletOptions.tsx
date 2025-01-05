@@ -6,6 +6,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { Config, Connector, CreateConnectorFn } from 'wagmi';
 import { ConnectMutate } from 'wagmi/query';
 
@@ -16,6 +18,19 @@ interface WalletOptionsProps {
 }
 
 const WalletOptions = ({ label, connectors, connect }: WalletOptionsProps) => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  async function handleConnect(connector: Connector<CreateConnectorFn>) {
+    await connect({ connector });
+    navigate('/all-groups');
+
+    toast({
+      title: 'Wallet Connected',
+      description: `You have successfully connected your ${connector.name} wallet.`,
+    });
+  }
+
   return (
     <Dialog>
       <DialogTrigger className="cursor-pointer w-32 h-7 md:h-9 mt-4 md:mt-8 mx-auto text-black dark:text-neutral-800 bg-neutral-300 rounded-md">
@@ -36,7 +51,7 @@ const WalletOptions = ({ label, connectors, connect }: WalletOptionsProps) => {
           {connectors.map((each) => (
             <li
               key={each.uid}
-              onClick={() => connect({ connector: each })}
+              onClick={async () => await handleConnect(each)}
               className={`w-full cursor-pointer p-3 rounded-md border border-PATRON_BORDER_COLOR flex justify-between items-center gap-3 ${each.name === 'Injected' ? 'hidden' : ''} bg-neutral-800/30`}
             >
               <div className="flex justify-start items-center gap-2">

@@ -3,6 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi';
+import { parseEther } from 'viem';
+
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -45,6 +48,11 @@ const CreateGroup = () => {
   const [communityName, setCommunityName] = useState('');
   const [communityDescription, setCommunityDescription] = useState('');
 
+  const { data: hash, sendTransactionAsync } = useSendTransaction();
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
+
   const handleCoverChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     image: 'cover' | 'profile'
@@ -77,17 +85,8 @@ const CreateGroup = () => {
   const { walletAddress } = useWalletStore();
 
   async function onSubmit(values: z.infer<typeof createGroupSchema>) {
-    const transactionStatus = await contractMethod('0.001');
-
-    if (transactionStatus === TransactionStatus.Sending) {
-      toast({ title: 'Transaction is processing...' });
-      return;
-    }
-
-    if (transactionStatus === TransactionStatus.Failed) {
-      toast({ title: 'Transaction failed' });
-      return;
-    }
+    const to = '0xe5b8c74cE5C016cccFa206E961e8E43d0E505521' as `0x${string}`;
+    await sendTransactionAsync({ to, value: parseEther('0.001') });
 
     const formData = new FormData();
 
@@ -206,6 +205,8 @@ const CreateGroup = () => {
                   ) : (
                     'Create Your Community'
                   )}
+                  {isConfirming && <div>Waiting for confirmation...</div>}
+                  {isConfirmed && <div>Transaction confirmed.</div>}
                 </Button>
                 <h5 className="text-md">
                   Pay <span className="font-semibold text-PATRON_TEXT_WHITE_PRIMARY">0.001</span>{' '}

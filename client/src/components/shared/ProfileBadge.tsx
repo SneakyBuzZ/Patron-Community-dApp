@@ -26,7 +26,6 @@ import {
   useChangeUserProfileImage,
   useGetUserByAddress,
 } from '@/lib/query/query';
-import useWalletStore from '@/lib/zustand/WalletStore';
 import AddressBadge from '@/components/shared/AddressBadge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AvatarList } from '@/lib/lists';
@@ -56,7 +55,7 @@ const ProfileBadge = () => {
   const [didImageChangeHappended, setDidImageChangeHappended] = useState(false);
 
   const { address: walletAddress } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { disconnectAsync, isSuccess: isDisconnected } = useDisconnect();
 
   const { mutateAsync: addUserToDb } = useAddUserToDb();
   const { mutateAsync: getUserByAddress, isPending: isLoading } = useGetUserByAddress();
@@ -159,16 +158,13 @@ const ProfileBadge = () => {
     }
   };
 
-  // const handleLogout = async () => {
-  //   const response = removeItem('walletAddress');
-
-  //   if (response) {
-  //     navigate('/');
-  //     toast({
-  //       title: 'Logged out successfully',
-  //     });
-  //   }
-  // };
+  const handleLogout = async () => {
+    await disconnectAsync();
+    navigate('/');
+    toast({
+      title: 'Logged out successfully',
+    });
+  };
 
   return (
     <Dialog>
@@ -197,7 +193,7 @@ const ProfileBadge = () => {
           <DropdownMenuSeparator className="dark:bg-stone-800" />
           <DropdownMenuItem
             className="hover:text-red-400 text-rose-700 cursor-pointer"
-            onClick={() => disconnect()}
+            onClick={async () => await handleLogout()}
           >
             Logout
           </DropdownMenuItem>

@@ -63,7 +63,7 @@ const GroupPage = () => {
   }, [group?.groupDisplayImage, groupDisplayImageUrl, setGroupDisplayImageUrl]);
 
   return (
-    <section className=" flex flex-col h-full">
+    <section className="w-full flex flex-col h-full">
       <div className="container flex flex-col mt-3 gap-14">
         <div className="flex flex-col w-full h-24 sm:h-32 lg:h-40 mx-auto gap-3">
           <Link

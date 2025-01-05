@@ -153,11 +153,8 @@ export default function HeroSection() {
   //   }
   // };
 
-  const { connectors, connect } = useConnect();
+  const { connectors, connectAsync } = useConnect();
   const account = useAccount();
-  const { disconnect } = useDisconnect();
-
-  console.log('ACCOUNT: ', account.isConnected);
 
   return (
     <div className="dark:bg-PATRON_BLACK z-10">
@@ -190,7 +187,7 @@ export default function HeroSection() {
             </>
           ) : (
             <>
-              <WalletOptions label={'Connect'} connectors={connectors} connect={connect} />
+              <WalletOptions label={'Connect'} connectors={connectors} connect={connectAsync} />
             </>
           )}
         </div>
