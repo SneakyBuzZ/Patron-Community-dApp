@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Pencil, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
+  useAddUserToDb,
   useChangeUserName,
   useChangeUserProfileImage,
   useGetUserByAddress,
@@ -32,8 +33,8 @@ import { AvatarList } from '@/lib/lists';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { MoonLoader } from 'react-spinners';
-import { removeItem } from '@/lib/localStorage';
 import { useNavigate } from 'react-router-dom';
+import { useAccount, useDisconnect } from 'wagmi';
 
 type UserDbType = {
   address: string;
@@ -54,14 +55,17 @@ const ProfileBadge = () => {
   const [didNameChangeHappended, setDidNameChangeHappended] = useState(false);
   const [didImageChangeHappended, setDidImageChangeHappended] = useState(false);
 
-  const { walletAddress } = useWalletStore();
+  const { address: walletAddress } = useAccount();
+  const { disconnect } = useDisconnect();
 
+  const { mutateAsync: addUserToDb } = useAddUserToDb();
   const { mutateAsync: getUserByAddress, isPending: isLoading } = useGetUserByAddress();
 
   useEffect(() => {
-    getUserByAddress(String(walletAddress)).then((response) => {
+    getUserByAddress(walletAddress?.toString().toLowerCase() || '').then((response) => {
       if (response?.status === 204) {
         setIsUserNew(true);
+        addUserToDb(walletAddress?.toString().toLowerCase() || '');
         toast({
           title: 'Are you new here ?',
           description: 'Connect wallet & explore our platform',
@@ -155,16 +159,16 @@ const ProfileBadge = () => {
     }
   };
 
-  const handleLogout = async () => {
-    const response = removeItem('walletAddress');
+  // const handleLogout = async () => {
+  //   const response = removeItem('walletAddress');
 
-    if (response) {
-      navigate('/');
-      toast({
-        title: 'Logged out successfully',
-      });
-    }
-  };
+  //   if (response) {
+  //     navigate('/');
+  //     toast({
+  //       title: 'Logged out successfully',
+  //     });
+  //   }
+  // };
 
   return (
     <Dialog>
@@ -193,7 +197,7 @@ const ProfileBadge = () => {
           <DropdownMenuSeparator className="dark:bg-stone-800" />
           <DropdownMenuItem
             className="hover:text-red-400 text-rose-700 cursor-pointer"
-            onClick={handleLogout}
+            onClick={() => disconnect()}
           >
             Logout
           </DropdownMenuItem>
@@ -269,11 +273,13 @@ const ProfileBadge = () => {
                         </Button>
                       )}
                     </div>
-                    <AddressBadge
-                      address={user?.address || ''}
-                      from={15}
-                      className="h-8 ml-0 border-none text-neutral-500"
-                    />
+                    {walletAddress && (
+                      <AddressBadge
+                        address={walletAddress}
+                        from={15}
+                        className="h-8 ml-0 border-none text-neutral-500"
+                      />
+                    )}
                   </div>
                 </div>
                 {profileEdit && (

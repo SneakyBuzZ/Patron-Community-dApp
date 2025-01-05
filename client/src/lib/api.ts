@@ -14,7 +14,7 @@ export const uploadImageToS3 = async (file: File) => {
   const formData = new FormData();
   formData.append('image', file);
   const responseUrl = await axios.post(
-    `http://localhost:3000/patron/api/s3/pre-signed-url`,
+    `http://localhost:8000/patron/api/s3/pre-signed-url`,
     formData,
     {
       headers: {
@@ -27,7 +27,7 @@ export const uploadImageToS3 = async (file: File) => {
 };
 
 export const generatePresignedUrl = async (name: string) => {
-  const responsePreUrl = await axios.get('http://localhost:3000/patron/api/s3/pre-signed-url', {
+  const responsePreUrl = await axios.get('http://localhost:8000/patron/api/s3/pre-signed-url', {
     params: {
       fileName: name,
     },
@@ -37,7 +37,7 @@ export const generatePresignedUrl = async (name: string) => {
 };
 
 export const displayImageOnPreview = async (file: File) => {
-  const responseUrl = await axios.get('http://localhost:3000/patron/api/s3/pre-signed-url', {
+  const responseUrl = await axios.get('http://localhost:8000/patron/api/s3/pre-signed-url', {
     params: {
       fileName: file?.name,
       contentType: file?.type,
@@ -53,7 +53,7 @@ export const displayImageOnPreview = async (file: File) => {
   }
 
   const responsePreUrl = await axios.get(
-    'http://localhost:3000/patron/api/s3/pre-signed-url/posts',
+    'http://localhost:8000/patron/api/s3/pre-signed-url/posts',
     {
       params: {
         fileName: file?.name,
@@ -65,7 +65,7 @@ export const displayImageOnPreview = async (file: File) => {
 };
 
 export const getUrlFromS3ByName = async (name: string) => {
-  const responsePreUrl = await axios.get('http://localhost:3000/patron/api/s3/pre-signed-url', {
+  const responsePreUrl = await axios.get('http://localhost:8000/patron/api/s3/pre-signed-url', {
     params: {
       fileName: name,
     },
@@ -119,7 +119,7 @@ export type UserToDbReturnType = {
 
 export const addUserToDb = async (walletAddress: string): Promise<UserToDbReturnType> => {
   const response = await axios.post(
-    `http://localhost:3000/patron/api/user/add-user?address=${walletAddress}`
+    `http://localhost:8000/patron/api/user/add-user?address=${walletAddress}`
   );
 
   return {
@@ -132,8 +132,10 @@ export const getUserByAddress = async (
   walletAddress: string
 ): Promise<UserToDbReturnType | void> => {
   const response = await axios.get(
-    `http://localhost:3000/patron/api/user/retrieve-user?address=${walletAddress}`
+    `http://localhost:8000/patron/api/user/retrieve-user?address=${walletAddress}`
   );
+
+  console.log('AXIOS RESPONSE: ', response);
 
   return {
     data: response.data.data,
@@ -142,7 +144,7 @@ export const getUserByAddress = async (
 };
 
 export const changeUserImage = async (userObject: ChangeUserImageType): Promise<string | void> => {
-  const response = await axios.put(`http://localhost:3000/patron/api/user/change-profileImage`, {
+  const response = await axios.put(`http://localhost:8000/patron/api/user/change-profileImage`, {
     image: userObject.image,
     address: userObject.address,
   });
@@ -151,7 +153,7 @@ export const changeUserImage = async (userObject: ChangeUserImageType): Promise<
 };
 
 export const changeUserName = async (userObject: ChangeUserNameType): Promise<string | void> => {
-  const response = await axios.put(`http://localhost:3000/patron/api/user/change-profileName`, {
+  const response = await axios.put(`http://localhost:8000/patron/api/user/change-profileName`, {
     name: userObject.name,
     address: userObject.address,
   });
@@ -161,7 +163,7 @@ export const changeUserName = async (userObject: ChangeUserNameType): Promise<st
 
 export const checkIfUserExists = async (walletAddress: string) => {
   const response = await axios.get(
-    `http://localhost:3000/patron/api/user/user-exists?address=${walletAddress}`
+    `http://localhost:8000/patron/api/user/user-exists?address=${walletAddress}`
   );
 
   return response.data.data;
@@ -169,7 +171,7 @@ export const checkIfUserExists = async (walletAddress: string) => {
 
 export const getUserIdByAddress = async (walletAddress: string) => {
   const response = await axios.get(
-    `http://localhost:3000/patron/api/user/get-userId?address=${walletAddress}`
+    `http://localhost:8000/patron/api/user/get-userId?address=${walletAddress}`
   );
 
   return response.data.data.id;
@@ -195,7 +197,7 @@ export const createGroup = async (formData: FormData) => {
 
   if (ownerId) {
     const response = await axios.post(
-      `http://localhost:3000/patron/api/group/create-group`,
+      `http://localhost:8000/patron/api/group/create-group`,
       formData,
       {
         headers: {
@@ -213,14 +215,14 @@ export const createGroup = async (formData: FormData) => {
 };
 
 export const getAllGroups = async () => {
-  const response = await axios.get(`http://localhost:3000/patron/api/group/get-allGroup`);
+  const response = await axios.get(`http://localhost:8000/patron/api/group/get-allGroup`);
 
   return response.data.data;
 };
 
 export const getGroupById = async (groupId: string): Promise<GroupType | null> => {
   const response = await axios.get(
-    `http://localhost:3000/patron/api/group/get-group?groupId=${groupId}`
+    `http://localhost:8000/patron/api/group/get-group?groupId=${groupId}`
   );
 
   return response.data.data;
@@ -236,7 +238,7 @@ export const addUserToGroup = async ({
   walletAddress: string;
 }) => {
   const response = await axios.post(
-    `http://localhost:3000/patron/api/groupUser/add-user-to-group?groupId=${groupId}&walletAddress=${walletAddress}`
+    `http://localhost:8000/patron/api/groupUser/add-user-to-group?groupId=${groupId}&walletAddress=${walletAddress}`
   );
 
   return response.data;
@@ -252,7 +254,7 @@ export const getUserJoinedDate = async ({
   const userId = await getUserIdByAddress(walletAddress);
 
   const response = await axios.get(
-    `http://localhost:3000/patron/api/groupUser/get-joinedDate?userId=${userId}&groupId=${groupId}`
+    `http://localhost:8000/patron/api/groupUser/get-joinedDate?userId=${userId}&groupId=${groupId}`
   );
 
   return response.data.data;
@@ -267,7 +269,7 @@ export const getHasJoined = async ({
 }) => {
   const userId = await getUserIdByAddress(walletAddress);
   const response = await axios.get(
-    `http://localhost:3000/patron/api/groupUser/get-isJoined?userId=${userId}&groupId=${groupId}`
+    `http://localhost:8000/patron/api/groupUser/get-isJoined?userId=${userId}&groupId=${groupId}`
   );
 
   if (response.status === 201) {
@@ -291,7 +293,7 @@ export const createPost = async ({
   const userId = await getUserIdByAddress(walletAddress);
 
   if (bountyType === undefined || bountyValue === undefined) {
-    const response = await axios.post(`http://localhost:3000/patron/api/post/create`, {
+    const response = await axios.post(`http://localhost:8000/patron/api/post/create`, {
       postImage,
       postTitle,
       postDescription,
@@ -302,7 +304,7 @@ export const createPost = async ({
     return response.data.statusCode;
   }
 
-  const response = await axios.post(`http://localhost:3000/patron/api/post/create`, {
+  const response = await axios.post(`http://localhost:8000/patron/api/post/create`, {
     postImage,
     postTitle,
     postDescription,
@@ -317,7 +319,7 @@ export const createPost = async ({
 
 export const getPostsInGroup = async (groupId: string) => {
   const response = await axios.get(
-    `http://localhost:3000/patron/api/post/get-groupPosts?groupId=${groupId}`
+    `http://localhost:8000/patron/api/post/get-groupPosts?groupId=${groupId}`
   );
 
   return response.data.data;
@@ -326,6 +328,6 @@ export const getPostsInGroup = async (groupId: string) => {
 // BOUNTY API
 
 export const createBounty = async (bounty: CreateBountyType) => {
-  const response = await axios.post('http://localhost:3000/patron/api/bounty', bounty);
+  const response = await axios.post('http://localhost:8000/patron/api/bounty', bounty);
   return response.data.data;
 };

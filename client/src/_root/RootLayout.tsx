@@ -1,13 +1,13 @@
 import NavBar from '@/components/shared/NavBar';
 import SidebarComp from '@/components/root/SideBarComp';
-import { getItemWithExpiry } from '@/lib/localStorage';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAccount } from 'wagmi';
 
 const RootLayout = () => {
-  const localStorageAddress = getItemWithExpiry('walletAddress');
+  const { isConnected } = useAccount();
   return (
     <>
-      {localStorageAddress ? (
+      {isConnected ? (
         <>
           <div className="w-full h-screen overflow-auto scrollbar-hide">
             <NavBar showAddress />

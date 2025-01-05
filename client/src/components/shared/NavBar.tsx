@@ -1,9 +1,9 @@
 import ProfileBadge from '@/components/shared/ProfileBadge';
-import { getItemWithExpiry } from '@/lib/localStorage';
 import { Link } from 'react-router-dom';
 import AddressBadge from '@/components/shared/AddressBadge';
 import { ToggleTheme } from '@/components/shared/ToggleTheme';
 import { cn } from '@/lib/utils';
+import { useAccount, useConnect } from 'wagmi';
 
 interface NavBarType {
   showAddress?: boolean;
@@ -11,7 +11,8 @@ interface NavBarType {
 }
 
 const NavBar = ({ showAddress = false, className }: NavBarType) => {
-  const localStorageAddress = getItemWithExpiry('walletAddress');
+  const { address } = useAccount();
+  const {} = useConnect();
 
   return (
     <nav
@@ -26,15 +27,11 @@ const NavBar = ({ showAddress = false, className }: NavBarType) => {
           <h1 className="text-xl font-audio-wide text-black dark:text-white">Patron</h1>
         </Link>
 
-        {localStorageAddress !== null && localStorageAddress?.length > 0 && showAddress && (
-          <AddressBadge address={localStorageAddress} />
-        )}
+        {address && address.length > 0 && showAddress && <AddressBadge address={address} />}
       </div>
       <div className="flex items-center gap-4">
         <ToggleTheme />
-        {localStorageAddress !== null && localStorageAddress?.length > 0 && showAddress && (
-          <ProfileBadge />
-        )}
+        {address && address.length > 0 && showAddress && <ProfileBadge />}
       </div>
     </nav>
   );

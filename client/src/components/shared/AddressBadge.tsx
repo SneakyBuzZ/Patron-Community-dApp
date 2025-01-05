@@ -6,7 +6,7 @@ const AddressBadge = ({
   className,
   from = 8,
 }: {
-  address: string;
+  address: `0x${string}`;
   className?: string;
   from?: number;
 }) => {
