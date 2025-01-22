@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -29,13 +23,14 @@ model User {
   updatedAt DateTime @updatedAt
   image     String?  @default("https://i.pinimg.com/564x/9b/b0/66/9bb066864b0d225c324551ee2c83125d.jpg")
 
-  ownerOf     Group[]
-  memberof    GroupUser[]
-  posts       Post[]      @relation(name: "ownership")
-  solvedPosts Post[]      @relation(name: "userWhoSolved")
-  comments    Comment[]
-  bounties    Bounty[]
+  ownerOf  Group[]
+  memberof GroupUser[]
+  posts    Post[]      @relation(name: "ownership")
+  comments Comment[]
+  bounties Bounty[]
 
+  @@index([name])
+  @@index([address])
   @@map("users")
 }
 
@@ -56,6 +51,10 @@ model Group {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([groupName])
+  @@index([ownerId])
+  @@index([isPrivate])
+  @@index([isCrypto])
   @@map("groups")
 }
 
@@ -83,10 +82,6 @@ model Post {
   groupId         String
   group           Group   @relation(fields: [groupId], references: [id])
 
-  whoSolvedId String?
-  whoSolved   User?   @relation(fields: [whoSolvedId], references: [id], name: "userWhoSolved")
-  isSolved    Boolean @default(false)
-
   comment Comment[]
 
   bountyId String?
@@ -95,11 +90,15 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([postTitle])
+  @@index([ownerId])
+  @@index([groupId])
   @@map("posts")
 }
 
 model Comment {
-  id      String @id @default(cuid())
+  id String @id @default(cuid())
+
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id])
   postId  String
