@@ -81,40 +81,6 @@ export const deletePost = async (req: Request, res: Response) => {
         .json(new ApiResponse(200, {}, 'Successfully deleted post'));
 };
 
-export const togglePostSolved = async (req: Request, res: Response) => {
-    const { whoSolvedId, postId } = req.query;
-
-    if (!whoSolvedId) {
-        throw new ApiError(400, 'Users id who solved is required');
-    }
-
-    const toggledPost = await db.post.update({
-        where: {
-            id: String(postId),
-        },
-        data: {
-            isSolved: true,
-            whoSolvedId: String(whoSolvedId),
-        },
-    });
-
-    if (!toggledPost) {
-        return res
-            .status(500)
-            .json(new ApiResponse(500, {}, 'Failed to toggle the post'));
-    }
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                toggledPost,
-                'Successfully toggled solved post'
-            )
-        );
-};
-
 export const getAllPostsInGroup = async (req: Request, res: Response) => {
     const { groupId } = req.query;
 
@@ -234,49 +200,5 @@ export const getAllPosts = async (req: Request, res: Response) => {
         .status(200)
         .json(
             new ApiResponse(200, allPosts, 'Successfully retrieved all posts')
-        );
-};
-
-export const getAllUnSolvedPostsInGroup = async (
-    req: Request,
-    res: Response
-) => {
-    const { limit, pageNo, groupId } = req.query;
-
-    const skip = (Number(pageNo) - 1) * Number(limit);
-
-    if (!groupId) {
-        throw new ApiError(400, 'groupId is required');
-    }
-
-    const allUnSolvedPostsInGroup = await db.post.findMany({
-        where: {
-            groupId: String(groupId),
-            isSolved: false,
-        },
-        skip,
-        take: Number(limit),
-    });
-
-    if (!allUnSolvedPostsInGroup) {
-        return res
-            .status(500)
-            .json(
-                new ApiResponse(
-                    500,
-                    {},
-                    'Failed to retriev all posts in a group which are unsolved'
-                )
-            );
-    }
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                allUnSolvedPostsInGroup,
-                'Successfully retrieved all posts in group which are solved'
-            )
         );
 };
