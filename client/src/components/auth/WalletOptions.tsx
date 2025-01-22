@@ -39,7 +39,7 @@ const WalletOptions = ({ label, connectors, connect }: WalletOptionsProps) => {
       <DialogContent className="flex flex-col w-full justify-center items-center max-w-[26rem]">
         <DialogHeader className="flex flex-col w-full justify-center items-center">
           <div className="flex justify-start items-center gap-3 my-3 mb-12">
-            <img src="/logo.svg" alt="logo" className="h-9 w-9" />
+            <img src="/logo.svg" alt="logo" className="h-9 w-9 select-none pointer-events-none" />
             <h3 className="font-audio-wide text-4xl text-white">Patron</h3>
           </div>
           <DialogTitle className="text-2xl">Connect Wallet</DialogTitle>

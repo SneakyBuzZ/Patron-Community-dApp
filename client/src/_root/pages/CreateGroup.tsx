@@ -38,7 +38,7 @@ const CreateGroup = () => {
   const { toast } = useToast();
   const [cover, setCover] = useState<File | null>(null);
   const [profile, setProfile] = useState<File | null>(null);
-  const { contractMethod, status } = useTransferFunds();
+  const { status } = useTransferFunds();
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
   const [profilePreviewUrl, setprofilePreviewUrl] = useState<string | null>(null);
 
@@ -80,6 +80,16 @@ const CreateGroup = () => {
       groupDescription: '',
     },
   });
+
+  const { watch } = form;
+
+  const groupName = watch('groupName');
+  const groupDescription = watch('groupDescription');
+
+  if (groupName) {
+    console.log('GROUP NAME HAS BEEN SET', groupName);
+    console.log('GROUP DESCRIPTION HAS NOT BEEN SET', groupDescription);
+  }
 
   const { mutateAsync: createGroup, isPending: isCreating } = useCreateGroup();
   const { walletAddress } = useWalletStore();
@@ -224,7 +234,7 @@ const CreateGroup = () => {
                 <img
                   src={coverPreviewUrl}
                   alt="Cover Page"
-                  className="h-32 w-full object-cover outline outline-1 outline-neutral-300 rounded-md"
+                  className="h-32 w-full object-cover outline outline-1 outline-neutral-300 rounded-md select-none pointer-events-none"
                 />
               ) : (
                 <FlexCol className="h-32 w-full bg-neutral-300 dark:bg-PATRON_DARK_GRAY rounded-md gap-1">
@@ -238,7 +248,7 @@ const CreateGroup = () => {
                 <img
                   src={profilePreviewUrl}
                   alt="Cover Page"
-                  className="h-24 w-24 bg-neutral-200 dark:bg-neutral-800 rounded-full transform -translate-y-11 translate-x-5 object-cover outline outline-neutral-300"
+                  className="select-none pointer-events-none h-24 w-24 bg-neutral-200 dark:bg-neutral-800 rounded-full transform -translate-y-11 translate-x-5 object-cover outline outline-neutral-300"
                 />
               ) : (
                 <FlexCol className="h-24 w-24 bg-neutral-200 dark:bg-neutral-800 rounded-full transform -translate-y-11 translate-x-5">

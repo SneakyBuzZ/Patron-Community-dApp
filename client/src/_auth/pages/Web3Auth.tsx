@@ -35,7 +35,7 @@ const Web3Auth = () => {
     <>
       <div className="border gap-5 flex flex-col justify-center items-center h-screen w-full">
         <div className="flex items-center justify-center gap-2">
-          <img className="h-8" src="/logo.svg" alt="logo" />
+          <img className="h-8 select-none pointer-events-none" src="/logo.svg" alt="logo" />
           <h1 className=" font-audio-wide text-white text-3xl">Patron</h1>
         </div>
         <MagicCard
@@ -52,7 +52,11 @@ const Web3Auth = () => {
                 gradientColor={'#131313'}
               >
                 <button onClick={connectWallet}>
-                  <img className="h-10" src="/meta-mask.svg" alt="meta-mask" />
+                  <img
+                    className="h-10 select-none pointer-events-none"
+                    src="/meta-mask.svg"
+                    alt="meta-mask"
+                  />
                 </button>
               </MagicCard>
               <MagicCard
@@ -60,7 +64,11 @@ const Web3Auth = () => {
                 gradientColor={'#131313'}
               >
                 <button>
-                  <img className="h-12" src="/wallet-connect.svg" alt="meta-mask" />
+                  <img
+                    className="h-12 select-none pointer-events-none"
+                    src="/wallet-connect.svg"
+                    alt="meta-mask"
+                  />
                 </button>
               </MagicCard>
             </div>

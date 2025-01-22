@@ -17,7 +17,7 @@ const Display = () => {
       dark:bg-PATRON_LIGHT_GRAY border dark:border-PATRON_BORDER_COLOR shadow-xl"
       >
         <AspectRatio ratio={16 / 9} className="bg-muted">
-          <img src={path} alt="Display" className="object-cover" />
+          <img src={path} alt="Display" className="object-cover select-none pointer-events-none" />
         </AspectRatio>
       </div>
     </>

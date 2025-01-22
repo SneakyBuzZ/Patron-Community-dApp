@@ -6,7 +6,7 @@ const PostCard = () => {
       <div className="flex w-full justify-between items-center p-3 gap-4 border-b border-b-PATRON_BLACK">
         <div className="flex w-full justify-start items-center">
           <img
-            className="rounded-full h-10 w-10"
+            className="rounded-full h-10 w-10 select-none pointer-events-none"
             src={'https://i.pinimg.com/564x/2f/98/17/2f98172f0a31207b3b67b076e2bcc534.jpg'}
             alt="ok"
           />
@@ -19,7 +19,7 @@ const PostCard = () => {
       </div>
 
       <img
-        className="h-[30rem] w-full object-cover"
+        className="h-[30rem] w-full object-cover select-none pointer-events-none"
         src="https://i.pinimg.com/564x/2f/98/17/2f98172f0a31207b3b67b076e2bcc534.jpg"
         alt="image"
       />

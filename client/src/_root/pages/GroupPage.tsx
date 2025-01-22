@@ -82,7 +82,7 @@ const GroupPage = () => {
                 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80'
               }
               alt="Photo by Drew Beamer"
-              className="h-full w-full rounded-md object-cover"
+              className="h-full w-full rounded-md object-cover select-none pointer-events-none"
             />
           )}
         </div>
@@ -91,7 +91,7 @@ const GroupPage = () => {
             <img
               src={groupDisplayImageUrl}
               alt={group?.groupDisplayImage}
-              className="h-20 w-20 rounded-full object-cover"
+              className="h-20 w-20 rounded-full object-cover select-none pointer-events-none"
             />
             <div className="w-full flex flex-col justify-start">
               <h1 className="text-xl md:text-2xl font-bold font-changa text-neutral-500 dark:text-PATRON_TEXT_WHITE_PRIMARY">

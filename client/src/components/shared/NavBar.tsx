@@ -23,7 +23,11 @@ const NavBar = ({ showAddress = false, className }: NavBarType) => {
     >
       <div className="flex justify-center items-center gap-2">
         <Link to={'/'} className="flex justify-start items-center gap-2">
-          <img className="h-5 invert dark:invert-0" src="/logo.svg" alt="logo" />
+          <img
+            className="h-5 invert dark:invert-0 select-none pointer-events-none"
+            src="/logo.svg"
+            alt="logo"
+          />
           <h1 className="text-xl font-audio-wide text-black dark:text-white">Patron</h1>
         </Link>
 

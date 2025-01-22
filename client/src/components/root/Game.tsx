@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { FaThumbsUp, FaShareAlt, FaStar } from 'react-icons/fa';
+import { FaThumbsUp, FaStar } from 'react-icons/fa';
 import FlexRow from '../ui/flex-row';
 import { Label } from '../ui/label';
 import { format } from 'date-fns';
 import FlexCol from '../ui/flex-col';
-import { Button } from '../ui/button';
 
 type GamePropType = {
   gameCoverImage: string;

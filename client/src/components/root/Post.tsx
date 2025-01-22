@@ -8,13 +8,13 @@ import {
 } from '@/components/motionui/dialog';
 import { XIcon } from 'lucide-react';
 
-interface PostPropType {
-  id: string;
-  imgSrc: string;
-  title: string;
-  subtitle: string;
-  description: string;
-}
+// interface PostPropType {
+//   id: string;
+//   imgSrc: string;
+//   title: string;
+//   subtitle: string;
+//   description: string;
+// }
 
 export function Post() {
   return (

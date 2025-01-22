@@ -23,7 +23,7 @@ const PreviewCard = ({ imageUrl, isPending }: { imageUrl?: string; isPending?: b
             <img
               src={imageUrl || '/place-holder.png'}
               alt="Display"
-              className="object-fill rounded-md w-full mx-auto"
+              className="object-fill rounded-md w-full mx-auto select-none pointer-events-none"
             />
           )}
 

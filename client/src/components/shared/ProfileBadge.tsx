@@ -55,7 +55,7 @@ const ProfileBadge = () => {
   const [didImageChangeHappended, setDidImageChangeHappended] = useState(false);
 
   const { address: walletAddress } = useAccount();
-  const { disconnectAsync, isSuccess: isDisconnected } = useDisconnect();
+  const { disconnectAsync } = useDisconnect();
 
   const { mutateAsync: addUserToDb } = useAddUserToDb();
   const { mutateAsync: getUserByAddress, isPending: isLoading } = useGetUserByAddress();

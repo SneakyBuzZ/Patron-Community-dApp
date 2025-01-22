@@ -85,7 +85,7 @@ export function Group({
             <img
               src={groupDisplayImageUrl}
               alt={groupDisplayImage}
-              className="h-16 w-16 rounded-full object-cover border-2 border-neutral-200 dark:border-PATRON_BORDER_COLOR"
+              className="h-16 w-16 rounded-full object-cover border-2 border-neutral-200 dark:border-PATRON_BORDER_COLOR select-none pointer-events-none "
             />
             <div className="flex flex-col justify-center items-start">
               <DialogTitle className="text-PATRON_BLACK dark:text-zinc-50 font-changa text-lg">
@@ -131,7 +131,7 @@ export function Group({
               <img
                 src={groupDisplayImageUrl}
                 alt={groupDisplayImage}
-                className="h-16 w-16 rounded-full"
+                className="h-16 w-16 rounded-full select-none pointer-events-none "
               />
               <div className="flex flex-col items-start justify-center gap-1 w-full">
                 <DialogTitle className="text-2xl text-zinc-950 dark:text-zinc-50 font-medium font-fira-code">

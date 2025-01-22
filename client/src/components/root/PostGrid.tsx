@@ -116,7 +116,7 @@ const PostGrid = () => {
                           <img
                             src={'/bounty.png'}
                             alt="bounty"
-                            className="h-60 w-60 object-contain rounded-lg mx-auto"
+                            className="h-60 w-60 object-contain rounded-lg mx-auto select-none pointer-events-none"
                           />
                           <div className="flex flex-col items-center justify-center text-lg p-3">
                             <Label className="text-xl text-center font-changa font-semibold text-neutral-500 dark:text-PATRON_TEXT_WHITE_PRIMARY w-full p-3">
@@ -155,7 +155,7 @@ const PostGrid = () => {
                   'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&dpr=2&q=80'
                 }
                 alt="hello"
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover select-none pointer-events-none"
               />
             </AspectRatio>
             <div className="flex items-center justify-between w-full px-3">

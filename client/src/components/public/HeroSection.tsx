@@ -11,10 +11,9 @@ import Display from '@/components/public/Display';
 // import useWalletStore from '@/lib/zustand/WalletStore';
 // import { hexlify } from 'ethers';
 // import { useAddUserToDb, useGetUserByAddress } from '@/lib/query/query';
-import { useToast } from '@/hooks/use-toast';
 import GradientBackground from '@/components/shared/GradientBackground';
 import WalletOptions from '../auth/WalletOptions';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect } from 'wagmi';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 // const ONE_WEEK = 7 * ONE_DAY; // One week in milliseconds
 
 export default function HeroSection() {
-  const { toast } = useToast();
+  // const { toast } = useToast();
   // const [walletAddress, setWalletAddress] = useState<string>('');
   const navigate = useNavigate();
   // const { setWalletAddress: setGlobalWalletAddress } = useWalletStore();

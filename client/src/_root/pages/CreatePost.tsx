@@ -208,7 +208,7 @@ const CreatePost = () => {
               <img
                 src={setPostImageUrl}
                 alt="post"
-                className="w-full h-60 object-cover rounded-md"
+                className="w-full h-60 object-cover rounded-md select-none pointer-events-none"
               />
             ) : (
               <FlexCol className="h-60 w-full bg-neutral-300 dark:bg-PATRON_DARK_GRAY rounded-md gap-1">

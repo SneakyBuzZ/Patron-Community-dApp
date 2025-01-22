@@ -6,6 +6,7 @@ const NotFoundPage = () => {
   const handleNotFound = async () => {
     navigate('/explore');
   };
+
   return (
     <>
       <h1 className="text-PATRON_TEXT_WHITE_PRIMARY">THIS IS 404 NOT FOUND PAGE</h1>
