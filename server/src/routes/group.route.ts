@@ -6,18 +6,13 @@ import {
     editGroupName,
     getAllGroups,
     getGroupById,
-    uploadImageToCloudinary,
 } from '../controllers/group.controller';
 
-import { upload } from '../middlewares/multer.middleware';
+import { upload } from '../utils/multer';
 
 export const groupRouter: Router = Router();
 
-groupRouter
-    .route('/upload-image')
-    .post(upload.single('groupCoverImage'), uploadImageToCloudinary);
-
-groupRouter.route('/create-group').post(createGroup);
+groupRouter.route('/create-group').post(upload.array('images', 7), createGroup);
 
 groupRouter.route('/delete-group/:groupId').delete(deletedGroup);
 

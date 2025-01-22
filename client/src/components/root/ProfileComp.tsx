@@ -33,7 +33,7 @@ const ProfileBadge = () => {
           <img
             src="https://github.com/shadcn.png"
             alt="profile"
-            className="rounded-full size-8 md:size-10"
+            className="rounded-full size-8 md:size-10 select-none pointer-events-none"
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-neutral-900 border-stone-800 text-neutral-400 font-fira-code">

@@ -9,8 +9,6 @@ import { generateUsername } from '../utils/generateUsername';
 export const addUserToDb = async (req: Request, res: Response) => {
     const { address } = req.query;
 
-    console.log('ADDRESS : ', address);
-
     if (!address) {
         throw new ApiError(
             400,
@@ -56,7 +54,6 @@ export const addUserToDb = async (req: Request, res: Response) => {
 };
 
 export const removeUserFromDb = async (req: Request, res: Response) => {
-    console.log('REQ PARAMS: ', req.params);
     const userId = req.params.userId;
 
     if (!userId) {
@@ -121,10 +118,10 @@ export const retrieveUserByAddress = async (req: Request, res: Response) => {
 
     if (!user) {
         return res
-            .status(400)
+            .status(204)
             .json(
                 new ApiResponse(
-                    400,
+                    204,
                     {},
                     'User with provided address doesnot exist'
                 )
@@ -144,8 +141,6 @@ export const retrieveUserByAddress = async (req: Request, res: Response) => {
 
 export const changeProfileImage = async (req: Request, res: Response) => {
     const { image, address } = req.body;
-
-    console.log('IMAGE: ', image);
 
     if (!image || !address) {
         throw new ApiError(
@@ -187,8 +182,6 @@ export const changeProfileImage = async (req: Request, res: Response) => {
 export const changeProfileName = async (req: Request, res: Response) => {
     const { name, address } = req.body;
 
-    console.log('NAME: ', name);
-
     if (!name || !address) {
         throw new ApiError(
             400,
@@ -228,8 +221,6 @@ export const changeProfileName = async (req: Request, res: Response) => {
 
 export const checkIfUserExists = async (req: Request, res: Response) => {
     const { address } = req.query;
-
-    console.log('ADDRESS : ', address);
 
     if (!address) {
         throw new ApiError(

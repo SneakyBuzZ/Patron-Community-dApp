@@ -1,13 +1,10 @@
-import useWalletStore from '@/lib/zustand/WalletStore';
-const HomePage = () => {
-  const { isConnected, walletAddress } = useWalletStore();
-  return (
-    <>
-      <h1>This is Home</h1>
+import PostCard from '@/components/root/PostCard';
 
-      <h1 className="text-white">{isConnected ? 'hey' : 'hello'}</h1>
-      <h1 className="text-white">{walletAddress}</h1>
-    </>
+const HomePage = () => {
+  return (
+    <section className="h-full">
+      <PostCard />
+    </section>
   );
 };
 

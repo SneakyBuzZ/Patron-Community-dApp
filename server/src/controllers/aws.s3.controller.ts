@@ -21,16 +21,19 @@ const client = new S3Client({
     },
 });
 
-const putObject = async (fileName: string, contentType: string) => {
+const putObject = async (
+    fileName: string,
+    fileType: string,
+    buffer: Buffer
+) => {
     const cmd = new PutObjectCommand({
         Bucket: BUCKET_NAME,
         Key: `patron/${fileName}`,
-        ContentType: contentType,
+        ContentType: fileType,
+        Body: buffer,
     });
 
-    const url = await getSignedUrl(client, cmd, { expiresIn: 10 });
-
-    return url;
+    await client.send(cmd);
 };
 
 export const getObject = async (fileName: string) => {
@@ -39,36 +42,39 @@ export const getObject = async (fileName: string) => {
         Key: `patron/${fileName}`,
     });
 
-    const url = await getSignedUrl(client, cmd, { expiresIn: 10 });
+    const url = await getSignedUrl(client, cmd, { expiresIn: 5 });
 
     return url;
+};
+
+export const uploadObject = async (req: Request, res: Response) => {
+    if (!req.file) {
+        throw new ApiError(400, 'No file uploaded');
+    }
+
+    const fileName = req.file.originalname;
+    const fileType = req.file.mimetype;
+    const buffer = req.file.buffer;
+
+    try {
+        await putObject(fileName, fileType, buffer);
+        res.status(200).json(
+            new ApiResponse(200, {}, 'File uploaded successfully')
+        );
+    } catch (error) {
+        console.log('GET PRESIGNED URL : AMAZON S3 : Failed to upload file');
+        res.status(500).json(new ApiResponse(500, {}, 'Failed to upload file'));
+    }
 };
 
 export const getPreSignedUrlToUpload = async (req: Request, res: Response) => {
     const { fileName, contentType } = req.query;
 
-    [fileName, contentType].some((value) => {
-        if (!value) {
-            throw new ApiError(
-                400,
-                'GET PRESIGNED URL : AMAZON S3 : fileName , contentType and userId are required'
-            );
-        }
-    });
-
-    // const user = await db.user.findUnique({
-    //     where: {
-    //         id: String(userId),
-    //     },
-    // });
-
     if (true) {
         try {
-            const url = await putObject(String(fileName), String(contentType));
+            // await putObject(String(fileName), String(contentType));
 
-            if (url) {
-                res.status(200).json(new ApiResponse(200, { url }, 'Success'));
-            }
+            res.status(200).json(new ApiResponse(200, {}, 'Success'));
         } catch (error) {
             console.log(
                 'GET PRESIGNED URL : AMAZON S3 : Failed to  assign pre-signed URL'
@@ -84,6 +90,7 @@ export const getPreSignedUrlFromBucket = async (
     res: Response
 ) => {
     const { fileName } = req.query;
+
     if (!fileName) {
         throw new ApiError(
             400,
@@ -91,11 +98,17 @@ export const getPreSignedUrlFromBucket = async (
         );
     }
 
-    const url = await getObject(String(fileName));
-
-    if (url) {
-        return res.status(200).json(new ApiResponse(200, { url }, 'Success'));
-    } else {
-        return res.status(404).json(new ApiResponse(404, {}, 'File not found'));
+    try {
+        const url = await getObject(String(fileName));
+        if (url) {
+            res.status(200).json(new ApiResponse(200, { url }, 'Success'));
+        } else {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, {}, 'File not found'));
+        }
+    } catch (error) {
+        console.log('GET PRESIGNED URL : AMAZON S3 : Failed to fetch URL');
+        res.status(500).json(new ApiResponse(500, {}, 'Failed to fetch URL'));
     }
 };

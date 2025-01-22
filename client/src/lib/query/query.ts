@@ -4,28 +4,45 @@ import {
   addUserToGroup,
   changeUserImage,
   changeUserName,
+  createBounty,
   createGroup,
-  CreateGroupType,
   createPost,
   displayImageOnPreview,
   generateGroupPreSignedUrl,
   generateGroupPreSignedUrls,
   generatePostPreSignedUrls,
+  generatePresignedUrl,
   getAllGroups,
   getGroupById,
+  getHasJoined,
   getPostsInGroup,
+  getUrlFromS3ByName,
   getUserByAddress,
   getUserJoinedDate,
+  UserToDbReturnType,
 } from '@/lib/api';
 import {
   ChangeUserImageType,
   ChangeUserNameType,
+  CreateBountyType,
   createPostType,
   GroupType,
   PostType,
 } from '@/lib/types';
 
 // * AWS S3
+
+export const useGeneratePresignedUrl = () => {
+  return useMutation({
+    mutationFn: (name: string) => generatePresignedUrl(name),
+  });
+};
+
+export const useGetUrlFromS3 = () => {
+  return useMutation({
+    mutationFn: (name: string) => getUrlFromS3ByName(name),
+  });
+};
 
 export const useDisplayImageOnPreview = () => {
   return useMutation({
@@ -61,7 +78,8 @@ export const useAddUserToDb = () => {
 
 export const useGetUserByAddress = () => {
   return useMutation({
-    mutationFn: (walletAddress: string) => getUserByAddress(walletAddress),
+    mutationFn: (walletAddress: string): Promise<UserToDbReturnType | void> =>
+      getUserByAddress(walletAddress),
   });
 };
 
@@ -81,13 +99,7 @@ export const useChangeUserName = () => {
 
 export const useCreateGroup = () => {
   return useMutation({
-    mutationFn: ({
-      groupName,
-      groupDescription,
-      groupCoverImage,
-      walletAddress,
-    }: CreateGroupType) =>
-      createGroup({ groupName, groupDescription, groupCoverImage, walletAddress }),
+    mutationFn: (formData: FormData) => createGroup(formData),
   });
 };
 
@@ -117,6 +129,13 @@ export const useGetUserJoinedDate = () => {
   });
 };
 
+export const useGetHasUserJoined = () => {
+  return useMutation({
+    mutationFn: ({ walletAddress, groupId }: { walletAddress: string; groupId: string }) =>
+      getHasJoined({ walletAddress, groupId }),
+  });
+};
+
 // *POST
 
 export const useCreatePost = () => {
@@ -127,6 +146,8 @@ export const useCreatePost = () => {
       postDescription,
       walletAddress,
       groupId,
+      bountyType,
+      bountyValue,
     }: createPostType) =>
       createPost({
         postImage,
@@ -134,6 +155,8 @@ export const useCreatePost = () => {
         postDescription,
         walletAddress,
         groupId,
+        bountyType,
+        bountyValue,
       }),
   });
 };
@@ -141,5 +164,13 @@ export const useCreatePost = () => {
 export const useGetAllPostsInGroup = () => {
   return useMutation({
     mutationFn: (groupId: string) => getPostsInGroup(groupId),
+  });
+};
+
+// *BOUNTY
+
+export const useCreateBounty = () => {
+  return useMutation({
+    mutationFn: (bounty: CreateBountyType) => createBounty(bounty),
   });
 };

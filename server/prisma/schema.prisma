@@ -34,17 +34,21 @@ model User {
   posts       Post[]      @relation(name: "ownership")
   solvedPosts Post[]      @relation(name: "userWhoSolved")
   comments    Comment[]
+  bounties    Bounty[]
 
   @@map("users")
 }
 
 model Group {
-  id               String @id @default(cuid())
-  groupName        String
-  groupDescription String
-  groupCoverImage  String
-  ownerId          String
-  owner            User   @relation(fields: [ownerId], references: [id])
+  id                String  @id @default(cuid())
+  groupName         String
+  groupDescription  String
+  groupDisplayImage String
+  groupCoverImage   String
+  ownerId           String
+  owner             User    @relation(fields: [ownerId], references: [id])
+  isPrivate         Boolean
+  isCrypto          Boolean
 
   members GroupUser[]
   posts   Post[]
@@ -85,6 +89,9 @@ model Post {
 
   comment Comment[]
 
+  bountyId String?
+  bounty   Bounty?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -99,4 +106,35 @@ model Comment {
   post    Post   @relation(fields: [postId], references: [id])
 
   @@map("comments")
+}
+
+enum BountyType {
+  TECH
+  DESIGN
+  MARKETING
+  OTHER
+}
+
+enum BountyStatus {
+  OPEN
+  CLOSED
+}
+
+model Bounty {
+  id           String       @id @default(cuid())
+  bountyValue  Float
+  bountyType   BountyType
+  bountyStatus BountyStatus @default(OPEN)
+
+  bountyOwnerId String
+  bountyOwner   User   @relation(fields: [bountyOwnerId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  postId String @unique
+  post   Post   @relation(fields: [postId], references: [id])
+
+  @@index([bountyStatus, bountyType, bountyOwnerId])
+  @@map("bounties")
 }
