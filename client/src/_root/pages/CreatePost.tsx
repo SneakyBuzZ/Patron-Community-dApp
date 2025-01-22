@@ -144,7 +144,7 @@ const CreatePost = () => {
   return (
     <div className="flex flex-col h-full items-start justify-start w-full">
       <div className="w-full px-7 py-2 border-b border-b-PATRON_BORDER_COLOR">
-        <h1 className="text-2xl font-changa font-semibold ">Create Post</h1>
+        <h1 className="text-2xl font-semibold ">Create Post</h1>
       </div>
       <FlexRow className="w-full items-start h-full">
         <FlexCol className="w-full py-5 gap-4">

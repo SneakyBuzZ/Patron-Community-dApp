@@ -9,7 +9,7 @@ import HomePage from '@/_root/pages/HomePage';
 import AllGroups from '@/_root/pages/AllGroups';
 import CreateGroup from '@/_root/pages/CreateGroup';
 import { QueryProvider } from '@/lib/query/QueryProvider';
-import Profile from '@/_root/pages/Profile';
+import Explore from '@/_root/pages/Explore';
 import { Toaster } from '@/components/ui/toaster';
 import GroupPage from '@/_root/pages/GroupPage';
 import CreatePost from '@/_root/pages/CreatePost';
@@ -38,7 +38,7 @@ function App() {
                   <Route path={`/:slug/create-post`} element={<CreatePost />} />
                   <Route path={`/games`} element={<AllGames />} />
                   <Route path="/home" element={<HomePage />} />
-                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/explore" element={<Explore />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>

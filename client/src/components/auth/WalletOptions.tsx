@@ -7,6 +7,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Config, Connector, CreateConnectorFn } from 'wagmi';
 import { ConnectMutate } from 'wagmi/query';
@@ -23,7 +24,7 @@ const WalletOptions = ({ label, connectors, connect }: WalletOptionsProps) => {
 
   async function handleConnect(connector: Connector<CreateConnectorFn>) {
     await connect({ connector });
-    navigate('/all-groups');
+    navigate('/home');
 
     toast({
       title: 'Wallet Connected',
@@ -33,16 +34,21 @@ const WalletOptions = ({ label, connectors, connect }: WalletOptionsProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger className="cursor-pointer w-32 h-7 md:h-9 mt-4 md:mt-8 mx-auto text-black dark:text-neutral-800 bg-neutral-300 rounded-md">
+      <DialogTrigger className="flex justify-center items-center cursor-pointer md:h-9 mt-4 md:mt-8 mx-auto text-smdark:text-neutral-600 bg-neutral-800 dark:bg-neutral-400 text-neutral-200 dark:text-neutral-800 rounded-md px-5">
         {label}
+        <ArrowRight size={15} width={40} />
       </DialogTrigger>
       <DialogContent className="flex flex-col w-full justify-center items-center max-w-[26rem]">
         <DialogHeader className="flex flex-col w-full justify-center items-center">
-          <div className="flex justify-start items-center gap-3 my-3 mb-12">
-            <img src="/logo.svg" alt="logo" className="h-9 w-9 select-none pointer-events-none" />
-            <h3 className="font-audio-wide text-4xl text-white">Patron</h3>
+          <div className="flex justify-start items-center gap-3 my-3 mb-8">
+            <img
+              src="/logo.svg"
+              alt="logo"
+              className="h-9 w-9 select-none pointer-events-none invert dark:invert-0"
+            />
+            <h3 className="font-audio-wide text-4xl dark:text-white text-neutral-800">Patron</h3>
           </div>
-          <DialogTitle className="text-2xl">Connect Wallet</DialogTitle>
+          <DialogTitle className="text-2xl text-neutral-700">Connect Wallet</DialogTitle>
           <DialogDescription className="w-full text-center text-neutral-500">
             Connect your wallet to Patron to get started. Patron supports multiple wallets.
           </DialogDescription>
@@ -52,7 +58,7 @@ const WalletOptions = ({ label, connectors, connect }: WalletOptionsProps) => {
             <li
               key={each.uid}
               onClick={async () => await handleConnect(each)}
-              className={`w-full cursor-pointer p-3 rounded-md border border-PATRON_BORDER_COLOR flex justify-between items-center gap-3 ${each.name === 'Injected' ? 'hidden' : ''} bg-neutral-800/30`}
+              className={`w-full cursor-pointer p-3 rounded-md border border-neutral-300 dark:border-PATRON_BORDER_COLOR flex justify-between items-center gap-3 ${each.name === 'Injected' ? 'hidden' : ''} dark:bg-neutral-800/30`}
             >
               <div className="flex justify-start items-center gap-2">
                 <img
