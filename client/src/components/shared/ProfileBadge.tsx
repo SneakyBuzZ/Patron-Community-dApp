@@ -21,19 +21,19 @@ import { Input } from '@/components/ui/input';
 import { Pencil, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
+  useAddUserToDb,
   useChangeUserName,
   useChangeUserProfileImage,
   useGetUserByAddress,
 } from '@/lib/query/query';
-import useWalletStore from '@/lib/zustand/WalletStore';
 import AddressBadge from '@/components/shared/AddressBadge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AvatarList } from '@/lib/lists';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { MoonLoader } from 'react-spinners';
-import { removeItem } from '@/lib/localStorage';
 import { useNavigate } from 'react-router-dom';
+import { useAccount, useDisconnect } from 'wagmi';
 
 type UserDbType = {
   address: string;
@@ -48,24 +48,44 @@ const ProfileBadge = () => {
   const [profileEdit, setProfileEdit] = useState(false);
   const [nameEdit, setNameEdit] = useState(false);
   const [user, setUser] = useState<null | UserDbType>(null);
+  const [isUserNew, setIsUserNew] = useState(true);
   const [currentProfile, setCurrentProfile] = useState<null | string>(null);
   const [name, setName] = useState<string>('');
   const [didNameChangeHappended, setDidNameChangeHappended] = useState(false);
   const [didImageChangeHappended, setDidImageChangeHappended] = useState(false);
 
-  const { walletAddress } = useWalletStore();
+  const { address: walletAddress } = useAccount();
+  const { disconnectAsync, isSuccess: isDisconnected } = useDisconnect();
 
+  const { mutateAsync: addUserToDb } = useAddUserToDb();
   const { mutateAsync: getUserByAddress, isPending: isLoading } = useGetUserByAddress();
 
   useEffect(() => {
-    getUserByAddress(String(walletAddress)).then((response) => {
-      if (response?.name || response?.image) {
-        setUser(response);
-        setCurrentProfile(response.image);
-        setName(response.name);
-        setDidImageChangeHappended(false);
-        setDidNameChangeHappended(false);
+    getUserByAddress(walletAddress?.toString().toLowerCase() || '').then((response) => {
+      if (response?.status === 204) {
+        setIsUserNew(true);
+        addUserToDb(walletAddress?.toString().toLowerCase() || '');
+        toast({
+          title: 'Are you new here ?',
+          description: 'Connect wallet & explore our platform',
+        });
+        return;
+      } else if (response?.status === 200) {
+        setIsUserNew(false);
+        if (response?.data) {
+          setUser(response.data);
+          setCurrentProfile(response.data.image || '');
+          setName(response.data.name || '');
+          setDidImageChangeHappended(false);
+        }
       }
+      // if (response.data?.name || response.data?.image) {
+      //   setUser(response.data);
+      //   setCurrentProfile(response.data.image || '');
+      //   setName(response.data.name || '');
+      //   setDidImageChangeHappended(false);
+      //   setDidNameChangeHappended(false);
+      // }
     });
   }, [setName, setCurrentProfile, didNameChangeHappended, didImageChangeHappended]);
 
@@ -139,14 +159,11 @@ const ProfileBadge = () => {
   };
 
   const handleLogout = async () => {
-    const response = removeItem('walletAddress');
-
-    if (response) {
-      navigate('/');
-      toast({
-        title: 'Logged out successfully',
-      });
-    }
+    await disconnectAsync();
+    navigate('/');
+    toast({
+      title: 'Logged out successfully',
+    });
   };
 
   return (
@@ -156,11 +173,13 @@ const ProfileBadge = () => {
       {/** DROP DOWN */}
       <DropdownMenu>
         <DropdownMenuTrigger className="border-none outline-none">
-          <img
-            src={currentProfile || user?.image || 'https://github.com/shadcn.png'}
-            alt="profile"
-            className="rounded-full size-8 md:size-9"
-          />
+          {!isUserNew && (
+            <img
+              src={currentProfile || user?.image || 'https://github.com/shadcn.png'}
+              alt="profile"
+              className="rounded-full size-8 md:size-9"
+            />
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="dark:bg-neutral-900 dark:border-stone-800 dark:text-neutral-400 font-fira-code mr-10">
           <DropdownMenuLabel className="dark:text-stone-300">My Account</DropdownMenuLabel>
@@ -174,7 +193,7 @@ const ProfileBadge = () => {
           <DropdownMenuSeparator className="dark:bg-stone-800" />
           <DropdownMenuItem
             className="hover:text-red-400 text-rose-700 cursor-pointer"
-            onClick={handleLogout}
+            onClick={async () => await handleLogout()}
           >
             Logout
           </DropdownMenuItem>
@@ -250,11 +269,13 @@ const ProfileBadge = () => {
                         </Button>
                       )}
                     </div>
-                    <AddressBadge
-                      address={user?.address || ''}
-                      from={15}
-                      className="h-8 ml-0 border-none text-neutral-500"
-                    />
+                    {walletAddress && (
+                      <AddressBadge
+                        address={walletAddress}
+                        from={15}
+                        className="h-8 ml-0 border-none text-neutral-500"
+                      />
+                    )}
                   </div>
                 </div>
                 {profileEdit && (

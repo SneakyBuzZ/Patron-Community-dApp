@@ -14,35 +14,39 @@ import { Toaster } from '@/components/ui/toaster';
 import GroupPage from '@/_root/pages/GroupPage';
 import CreatePost from '@/_root/pages/CreatePost';
 import { ThemeProvider } from '@/components/shared/ThemeProvider';
+import AllGames from '@/_root/pages/AllGames';
+import WalletProvider from '@/lib/wallet-adapter/WalletProvider';
 
 function App() {
   return (
     <>
-      <QueryProvider>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <section className="w-full min-h-screen flex flex-col justify-start items-center font-fira-code">
-            <Routes>
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<AllGroups />} />
-              </Route>
-              <Route element={<AuthLayout />}>
-                <Route index path="/auth" element={<Web3Auth />} />
-              </Route>
-              <Route element={<RootLayout />}>
-                <Route path="/ok" element={<AllGroups />} />
-                <Route path="/create-group" element={<CreateGroup />} />
-                <Route path={`/group/:slug`} element={<GroupPage />} />
-                <Route path={`/:slug/create-post`} element={<CreatePost />} />
-
-                <Route path="/test/home" element={<HomePage />} />
-                <Route path="/profile" element={<Profile />} />
-              </Route>
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-            <Toaster />
-          </section>
-        </ThemeProvider>
-      </QueryProvider>
+      <WalletProvider>
+        <QueryProvider>
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <section className="w-full min-h-screen flex flex-col justify-start items-center font-fira-code">
+              <Routes>
+                <Route element={<PublicLayout />}>
+                  <Route path="/" element={<LandingPage />} />
+                </Route>
+                <Route element={<AuthLayout />}>
+                  <Route index path="/auth" element={<Web3Auth />} />
+                </Route>
+                <Route element={<RootLayout />}>
+                  <Route path="/all-groups" element={<AllGroups />} />
+                  <Route path="/create-group" element={<CreateGroup />} />
+                  <Route path={`/group/:slug`} element={<GroupPage />} />
+                  <Route path={`/:slug/create-post`} element={<CreatePost />} />
+                  <Route path={`/games`} element={<AllGames />} />
+                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Route>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+              <Toaster />
+            </section>
+          </ThemeProvider>
+        </QueryProvider>
+      </WalletProvider>
     </>
   );
 }

@@ -1,11 +1,11 @@
 import PostGrid from '@/components/root/PostGrid';
-import NavBar from '@/components/shared/NavBar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 // import { generatePreSignedUrls } from '@/lib/api';
 import {
   useGenerateGroupPreSignedUrl,
+  useGeneratePresignedUrl,
   useGetGroupById,
   useGetUserJoinedDate,
 } from '@/lib/query/query';
@@ -27,6 +27,9 @@ const GroupPage = () => {
   const { mutateAsync: getUserJoinedDate } = useGetUserJoinedDate();
   const { mutateAsync: generatePostPreSignedUrl, isPending: isSigningUrls } =
     useGenerateGroupPreSignedUrl();
+  const { mutateAsync: generatePresignedUrl } = useGeneratePresignedUrl();
+
+  const [groupDisplayImageUrl, setGroupDisplayImageUrl] = useState('');
 
   useEffect(() => {
     if (slug) {
@@ -44,16 +47,24 @@ const GroupPage = () => {
           walletAddress: walletAddress.toString(),
           groupId: slug,
         }).then((response) => {
-          console.log('RESPONSE JOINED DATA: ', response);
           setjoinedDate(convertDateToDDMMYYYY(response));
         });
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (!group?.groupDisplayImage) {
+      return;
+    }
+    generatePresignedUrl(group?.groupDisplayImage).then((response) => {
+      setGroupDisplayImageUrl(response);
+    });
+  }, [group?.groupDisplayImage, groupDisplayImageUrl, setGroupDisplayImageUrl]);
+
   return (
-    <section className="w-full h-full flex flex-col">
-      <NavBar showAddress />
-      <div className="container flex flex-col my-5 mt-8 gap-20">
+    <section className="w-full flex flex-col h-full">
+      <div className="container flex flex-col mt-3 gap-14">
         <div className="flex flex-col w-full h-24 sm:h-32 lg:h-40 mx-auto gap-3">
           <Link
             to={'/all-groups'}
@@ -75,13 +86,22 @@ const GroupPage = () => {
             />
           )}
         </div>
-        <div className="w-full flex flex-col justify-start">
-          <h1 className="text-xl md:text-2xl font-bold font-changa text-neutral-500 dark:text-PATRON_TEXT_WHITE_PRIMARY">
-            {group?.groupName?.toUpperCase()}
-          </h1>
-          <p className="text-xs text-neutral-400 dark:text-PATRON_TEXT_WHITE_SECONDARY/50 my-2">
-            {group?.groupDescription}
-          </p>
+        <div className="w-full flex flex-col justify-start gap-2">
+          <div className="flex w-full justify-center items-start gap-3">
+            <img
+              src={groupDisplayImageUrl}
+              alt={group?.groupDisplayImage}
+              className="h-20 w-20 rounded-full object-cover"
+            />
+            <div className="w-full flex flex-col justify-start">
+              <h1 className="text-xl md:text-2xl font-bold font-changa text-neutral-500 dark:text-PATRON_TEXT_WHITE_PRIMARY">
+                {group?.groupName?.toUpperCase()}
+              </h1>
+              <p className="text-xs text-neutral-400 dark:text-PATRON_TEXT_WHITE_SECONDARY/50 my-2">
+                {group?.groupDescription}
+              </p>
+            </div>
+          </div>
           <div className="flex items-center gap-3 w-full justify-between my-3">
             <div className="flex items-center gap-3">
               <div className="flex items-center">
@@ -108,7 +128,7 @@ const GroupPage = () => {
         </div>
       </div>
       <DropdownMenuSeparator className=" bg-neutral-300 dark:bg-PATRON_BORDER_COLOR" />
-      <div className="container flex flex-col items-center my-6">
+      <div className="container flex flex-col items-center my-2">
         <div className="flex items-center justify-between w-full">
           <h1 className="text-3xl font-changa font-semibold text-neutral-400 dark:text-PATRON_TEXT_WHITE_PRIMARY">
             Posts
@@ -123,6 +143,7 @@ const GroupPage = () => {
           </Button>
         </div>
       </div>
+
       <PostGrid />
     </section>
   );

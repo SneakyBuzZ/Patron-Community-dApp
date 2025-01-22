@@ -93,7 +93,6 @@
   body {
     @apply bg-[#fafafa] dark:bg-[#030303] text-neutral-700 dark:text-[#9D9D9D];
   }
-
 }
 
 @layer components {
@@ -102,7 +101,7 @@
   }
 
   .glassmorphism {
-    @apply bg-neutral-100 dark:bg-PATRON_DARK_GRAY bg-opacity-60 backdrop-blur-md z-10
+    @apply bg-neutral-100 dark:bg-PATRON_DARK_GRAY bg-opacity-60 backdrop-blur-md z-10;
   }
 }
 
@@ -121,18 +120,29 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #313131;
+  background: #a5a5a500;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1d1d1d;
+  background: #494949;
   border-radius: 10px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

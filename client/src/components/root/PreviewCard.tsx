@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button';
 import { DotLoader } from 'react-spinners';
 
 const PreviewCard = ({ imageUrl, isPending }: { imageUrl?: string; isPending?: boolean }) => {
-  console.log(imageUrl);
-  console.log(isPending);
   return (
     <div className="w-full order-6 border-t dark:border-t-PATRON_BORDER_COLOR lg:order-3 flex flex-col justify-center items-center py-5 h-full">
       <h1 className="text-xl w-full pb-3 px-10 sm:text-center font-audio-wide border-b dark:border-b-PATRON_BORDER_COLOR">

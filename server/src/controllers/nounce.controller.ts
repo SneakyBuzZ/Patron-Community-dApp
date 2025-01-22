@@ -5,9 +5,21 @@ import { ApiResponse } from '../utils/ApiResponse';
 import { recoverPersonalSignature } from 'eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
 import { getNounceByWalletAddress } from '../helpers/nounce.helper';
+import { ApiError } from '../utils/ApiError';
+import {
+    checkIfWalletAddressExistsToSchema,
+    createNounceToSchema,
+    getNounceByWalletToSchema,
+    verifyNounceToSchema,
+} from '../utils/schema';
 
 export const createNounce = async (req: Request, res: Response) => {
-    const { walletAddress } = req.query;
+    // const { walletAddress } = req.query;
+    const { success, data } = createNounceToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'CREATE NOUNCE : NOUNCE CONTROLLER');
+    }
+    const { walletAddress } = data;
 
     const nounce = cuid();
 
@@ -40,7 +52,12 @@ export const createNounce = async (req: Request, res: Response) => {
 };
 
 export const verifyNounce = async (req: Request, res: Response) => {
-    const { walletAddress, signedNounce } = req.query;
+    // const { walletAddress, signedNounce } = req.query;
+    const { success, data } = verifyNounceToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'CREATE NOUNCE : NOUNCE CONTROLLER');
+    }
+    const { walletAddress, signedNounce } = data;
 
     const nounce = await getNounceByWalletAddress(String(walletAddress));
     const hexNounce = bufferToHex(Buffer.from(String(nounce), 'utf-8'));
@@ -77,8 +94,14 @@ export const checkIfWalletAddressExists = async (
     req: Request,
     res: Response
 ) => {
-    const { walletAddress } = req.query;
-
+    // const { walletAddress } = req.query;
+    const { success, data } = checkIfWalletAddressExistsToSchema.safeParse(
+        req.query
+    );
+    if (!success) {
+        throw new ApiError(500, 'CREATE NOUNCE : NOUNCE CONTROLLER');
+    }
+    const { walletAddress } = data;
     try {
         const response = await db.nounce.findUnique({
             where: {
@@ -117,8 +140,12 @@ export const checkIfWalletAddressExists = async (
 };
 
 export const getNounceByWallet = async (req: Request, res: Response) => {
-    const { walletAddress } = req.query;
-
+    // const { walletAddress } = req.query;
+    const { success, data } = getNounceByWalletToSchema.safeParse(req.query);
+    if (!success) {
+        throw new ApiError(500, 'CREATE NOUNCE : NOUNCE CONTROLLER');
+    }
+    const { walletAddress } = data;
     const nounce = await getNounceByWalletAddress(String(walletAddress));
 
     if (nounce) {

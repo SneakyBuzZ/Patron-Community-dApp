@@ -1,5 +1,5 @@
 import { AbiItem } from 'web3';
-import { TransactionStatus } from '@/lib/enum';
+import { BountyType, TransactionStatus } from '@/lib/enum';
 
 export type ChangeUserImageType = {
   address: string;
@@ -13,12 +13,13 @@ export type ChangeUserNameType = {
 
 export type GroupType = {
   groupCoverImage: string;
+  groupDisplayImage: string;
   groupName: string;
   groupDescription: string;
   createdAt: string | Date;
   members: any[];
   id: string;
-  hasJoined?: boolean;
+  hasJoined?: boolean | 'owner';
 };
 
 export type createPostType = {
@@ -27,6 +28,8 @@ export type createPostType = {
   postDescription: string;
   walletAddress: string;
   groupId: string;
+  bountyValue?: number | null | undefined;
+  bountyType?: BountyType | null | undefined;
 };
 
 export type PostType = {
@@ -38,6 +41,10 @@ export type PostType = {
     name: string;
     image: string;
   };
+  bounty: {
+    bountyValue: number;
+    bountyType: BountyType;
+  } | null;
 };
 
 export type GradientBackgroundPropType = {
@@ -53,4 +60,11 @@ export type UseTransferFundsResult = {
   contractMethod: (amount: string | number) => Promise<TransactionStatus>;
   status: TransactionStatus;
   error?: string;
+};
+
+export type CreateBountyType = {
+  bountyValue: number;
+  bountyType: BountyType;
+  bountyOwnerId: string;
+  postId: string;
 };
